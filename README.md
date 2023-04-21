@@ -1,4 +1,4 @@
-# Repository for sharing and testing code on mocel refinement
+# Repository for sharing and testing code on model refinement
 
 ## Directory information
 
