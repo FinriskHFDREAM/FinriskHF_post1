@@ -19,15 +19,15 @@ The structure of input directory will be as described as below. The pheno_scorin
 ├── scoring
 │   ├── pheno_scoring.csv
 │   ├── readcounts_scoring.csv
-│ 	├── pheno_scoring_nohide.csv
-│   ├── readcounts_scoring.csv
+│   ├── pheno_scoring_nohide.csv
 │   └── taxtable.csv
 └── train
-│  	├── pheno_scoring.csv
-│   ├── readcounts_scoring.csv
+│  	├── pheno_train.csv
+│   ├── readcounts_train.csv
 │   └── taxtable.csv
 └── test
 	├── pheno_test.csv
     ├── readcounts_test.csv
 	└── taxtable.csv
 ```
+
