@@ -15,6 +15,7 @@
 IMPORTANT: in the code please allow arguments that will point into the input directory (real or synthetic)
 The structure of input directory will be as described as below. The pheno_scoring_nohide.csv is for evaluate the individual risk score from true value (event and event time informations available).
 
+```
 ├── scoring
 │   ├── pheno_scoring.csv
 │   ├── readcounts_scoring.csv
@@ -29,3 +30,4 @@ The structure of input directory will be as described as below. The pheno_scorin
 	├── pheno_test.csv
     ├── readcounts_test.csv
 	└── taxtable.csv
+```
