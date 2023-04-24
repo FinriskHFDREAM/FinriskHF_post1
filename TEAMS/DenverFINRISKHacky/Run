@@ -1,0 +1,1 @@
+singularity exec --net --network none DenverFINRISKHacky_Final.sif Rscript model.R <Argument for input path>
