@@ -1,4 +1,6 @@
 input_real/
 TEAMS/SB2/sim_image
+TEAMS/SB2/output_ori/scores.csv
+TEAMS/DenverFINRISKHacky/sim_image
+TEAMS/DenverFINRISKHacky/output_ori/scores.csv
 
-#scores output to be added
