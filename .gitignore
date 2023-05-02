@@ -3,4 +3,8 @@ TEAMS/SB2/sim_image
 TEAMS/SB2/output_ori/scores.csv
 TEAMS/DenverFINRISKHacky/sim_image
 TEAMS/DenverFINRISKHacky/output_ori/scores.csv
-
+TEAMS/SB2/ref_v1/*rds
+TEAMS/SB2/ref_v1/scores_lasso.csv
+TEAMS/SB2/ref_v1/scores_enet.csv
+TEAMS/SB2/ref_v1/scores_alassoL.csv
+TEAMS/SB2/ref_v1/scores_alassoU.csv
