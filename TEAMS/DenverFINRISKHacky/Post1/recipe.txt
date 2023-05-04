@@ -13,8 +13,10 @@ FROM: bioconductor/bioconductor_docker:devel
 # Install CRAN packages
 R --slave -e 'install.packages(c("Matrix", "glmnet", "ecodist", "vegan", "survival"))'
 
-# Install Bioconductor packages
-R --slave -e 'BiocManager::install(c("microbiome", "phyloseq", "TreeSummarizedExperiment", "mia"))'
+# Install Bioconductor packages using the versions available at Jan 2023
+R --slave -e 'BiocManager::install(version = "3.16")'
+R --slave -e 'BiocManager::install("mia", version = "1.7.4")'
+R --slave -e 'BiocManager::install(c("microbiome", "phyloseq", "TreeSummarizedExperiment"))'
 
 %runscript
   exec Rscript model.R "$@"
