@@ -10,3 +10,11 @@ TEAMS/SB2/ref_v1/scores_alassoU.csv
 TEAMS/SB2/*ER
 TEAMS/SB2/*OU
 TEAMS/SB2/*job
+TEAMS/SB2/ref_v2/scores_lasso.csv
+TEAMS/SB2/ref_v2/scores_enet.csv
+TEAMS/SB2/ref_v2/scores_alassoL.csv
+TEAMS/SB2/ref_v2/scores_alassoU.csv
+TEAMS/SB2/ref_v3/scores_lasso.csv
+TEAMS/SB2/ref_v3/scores_enet.csv
+TEAMS/SB2/ref_v3/scores_alassoL.csv
+TEAMS/SB2/ref_v3/scores_alassoU.csv
