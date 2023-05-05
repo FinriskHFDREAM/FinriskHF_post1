@@ -1,1 +1,1 @@
-singularity exec --net --network none DenverFINRISKHacky_Final.sif Rscript model.R <Argument for input path>
+singularity exec --net --network none DenverFINRISKHacky_Post1.sif Rscript model.R <Argument for input path> <"test" OR "scoring">

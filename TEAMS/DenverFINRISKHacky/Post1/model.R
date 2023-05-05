@@ -840,6 +840,14 @@ PARAM <- list()
 # Path of input folder
 PARAM$folder.R <- paste0(args[1]) 
 
+# Just in case for debugging
+if(length(args) < 2){
+	stop("Two arguments should be passed to the R script; first the output folder location, second either 'test' or 'scoring'")
+}else{
+	print("args provided as seen by the R script:")
+	print(args)
+}
+
 # Once model actually runs
 # Create team folder
 dir.create(file.path(PARAM$folder.R, paste0("DenverFINRISKHacky_", subname)))
@@ -853,19 +861,43 @@ PARAM$folder.result <- paste0(PARAM$folder.data, paste0("DenverFINRISKHacky_", s
 # New 'test' data is the 'scoring' data
 
 # Pheno data (both meta as well as response)
-test_p <- read.csv(file = paste0(PARAM$folder.data, "scoring/pheno_scoring.csv"), row.names=1) # -> to scoring
+# 2nd par determines which test set to use ('test' or 'scoring'):
+if(args[2] == "scoring"){
+	test_p <- read.csv(file = paste0(PARAM$folder.data, "scoring/pheno_scoring.csv"), row.names=1)
+}else if(args[2] == "test"){
+	test_p <- read.csv(file = paste0(PARAM$folder.data, "test/pheno_test.csv"), row.names=1)
+}else{
+        stop("Second input argument to R script should be either 'scoring' or 'test'")
+}
 train_p <- read.csv(file = paste0(PARAM$folder.data, "train/pheno_training.csv"), row.names=1)
 
 # Read count raw data
-test_r <- read.csv(file = paste0(PARAM$folder.data, "scoring/readcounts_scoring.csv"), row.names=1) # -> to scoring
+# 2nd par determines which test set to use ('test' or 'scoring'):
+if(args[2] == "scoring"){
+	test_r <- read.csv(file = paste0(PARAM$folder.data, "scoring/readcounts_scoring.csv"), row.names=1)
+}else if(args[2] == "test"){
+	test_r <- read.csv(file = paste0(PARAM$folder.data, "test/readcounts_test.csv"), row.names=1)
+}else{
+	stop("Second input argument to R script should be either 'scoring' or 'test'")
+}
 train_r <- read.csv(file = paste0(PARAM$folder.data, "train/readcounts_training.csv"), row.names=1)
 
 # Read taxa along with raw reads and metadata into a phyloseq object
-test_phylo <- csv2phylo(
-	otu.file=paste0(PARAM$folder.data, "scoring/readcounts_scoring.csv"), # -> to scoring
-	taxonomy.file=paste0(PARAM$folder.data, "scoring/taxtable.csv"), # -> to scoring
-	metadata.file=paste0(PARAM$folder.data, "scoring/pheno_scoring.csv") # -> to scoring
-)
+if(args[2] == "test"){
+        test_phylo <- csv2phylo(
+                otu.file=paste0(PARAM$folder.data, "test/readcounts_test.csv"), # -> to test
+                taxonomy.file=paste0(PARAM$folder.data, "test/taxtable.csv"), # -> to test
+                metadata.file=paste0(PARAM$folder.data, "test/pheno_test.csv") # -> to test
+        )
+}else if(args[2] == "scoring"){
+	test_phylo <- csv2phylo(
+		otu.file=paste0(PARAM$folder.data, "scoring/readcounts_scoring.csv"), # -> to scoring
+		taxonomy.file=paste0(PARAM$folder.data, "scoring/taxtable.csv"), # -> to scoring
+		metadata.file=paste0(PARAM$folder.data, "scoring/pheno_scoring.csv") # -> to scoring
+	)
+}else{
+	stop("Second input argument to R script should be either 'scoring' or 'test'")
+}
 train_phylo <- csv2phylo(
 	otu.file=paste0(PARAM$folder.data, "train/readcounts_training.csv"), 
 	taxonomy.file=paste0(PARAM$folder.data, "train/taxtable.csv"),
@@ -885,7 +917,7 @@ res <- model(
 )
 
 # Provide debug output
-print("Final head of results results:\n")
+print("Final head of results:")
 print(head(res))
 
 # Write the resulting scores.csv
@@ -893,8 +925,3 @@ write.csv(res, file=paste0(PARAM$folder.result, "scores.csv"), quote=FALSE, row.
 
 # Write the list of lists with penalized linear Cox model coefficients as an RData object
 save(coefs, file=paste0(PARAM$folder.result, "coefs.RData"))
-
-# Just in case for debugging
-print("args provided:")
-print(args)
-
