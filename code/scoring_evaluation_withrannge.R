@@ -12,11 +12,9 @@ args=(commandArgs(TRUE))
 PARAM <- list()
 #this argument is to specify the path of input folder
 #the input folder structure is similar to DreamHF.zip both for synthetic and real dataset
-PARAM$folder.R <- paste0(args[1])
+PARAM$folder.in <- paste0(args[1])
 PARAM$folder.out <- paste0(args[2])
-#please avoid using (.) in your team name
-PARAM$folder.data <- paste0(PARAM$folder.R, "/")
-PARAM$folder.result <- paste0(PARAM$folder.data, PARAM$folder.out,"/output/")
+PARAM$score <- paste0(args[3])
 range01 <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
 
 #functions
@@ -98,8 +96,7 @@ teststats <-  function(S,predicted) {
 #survival object contains informations of time-to-even data and censoring information
 # load data
 print("Load data")
-S.test <- read.csv(file = paste0(PARAM$folder.data, 
-                                 "test/pheno_test.csv") 
+S.test <- read.csv(file = paste0(PARAM$folder.in) 
                    ,row.names=1)
 endpoints <- c("Event_time", "Event")
 df.test <- elim(S.test)
@@ -108,8 +105,7 @@ surv.object=Surv(df.test$Event_time,df.test$Event)
 df.surv <- data.frame(SampleID=rownames(df.test),True.Score=surv.object) #need to create with Sample ID, to make sure that the order of submitted score is align with true score
 
 #read score file from submitted algorithm
-scores <- read.csv(file = paste0(PARAM$folder.result, 
-                                  "scores.csv"))
+scores <- read.csv(file = paste0(PARAM$folder.out,"/",PARAM$score,".csv"))
 if (length(unique(scores$Score))==1){
   scores$Score=scores$Score
 } else {
@@ -121,6 +117,6 @@ data_merge <- merge(scores, df.surv, by = c("SampleID"))
 evaluation <- teststats(data_merge$True.Score,data_merge$Score)
 df.eval <- data.frame("harrell_c"=evaluation$C,"hoslem_test"=evaluation$hoslem_p$pval, row.names = "value")
 
-write.csv(df.eval, file=paste0(PARAM$folder.result, 
-                                     "stats.csv"), 
+write.csv(df.eval, file=paste0(PARAM$folder.out,"/",PARAM$score, 
+                                     ".stats.csv"), 
           quote=FALSE, row.names=FALSE)
