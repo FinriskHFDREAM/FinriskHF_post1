@@ -6,13 +6,14 @@ require(dplyr)
 require(survival)
 require(ggplot2)
 require(ggpubr)
+require(Hmisc)
 
 args=(commandArgs(TRUE))
 PARAM <- list()
 PARAM$folder.R <- paste0(args[1]) 
 PARAM$folder.data <- paste0(PARAM$folder.R, "/")
 
-test_path <- paste0(PARAM$folder.data, "input_real/scoring/pheno_scoring.csv")        # add path to test data
+test_path <- paste0(PARAM$folder.data, "input_real/scoring_nohide/pheno_scoring_nohide.csv")        # add path to test data
 sb2_path <- paste0(PARAM$folder.data, "TEAMS/SB2/output_ori/scores.csv")        # add path to sb2 scores
 denver_path <- paste0(PARAM$folder.data, "TEAMS/DenverFINRISKHacky/output_ori/scores.csv")      # add path to denver scores
 
@@ -119,6 +120,8 @@ toPlot <- rbind.data.frame(
   data_smoking
 )
 
+print(head(toPlot))
+
 toPlot <- data.table::melt(toPlot)
 names(toPlot) <- c("groups", "variable", "score", "value")
 toPlot$score <- as.character(toPlot$score)
@@ -128,13 +131,14 @@ toPlot$metric <- sapply(strsplit(toPlot$score, "_"), "[", 1)
 # Plotting
 toPlot_c <- toPlot[which(toPlot$metric == "c"), ]
 ggscatter(
-  toPlot_,
+  toPlot_c,
   x = "groups",
   y = "value",
   color = "team"
 ) +
   facet_wrap(~variable , scales = "free") +
   ylab(label = "C-Index")
+ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare.pdf")),width = 12,height = 6, device="pdf")
 
 toPlot_h <- toPlot[which(toPlot$metric == "holmes"), ]
 ggscatter(
@@ -145,3 +149,4 @@ ggscatter(
 ) +
   facet_wrap(~variable , scales = "free") +
   ylab(label = "Hoslem test")
+ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare.pdf")),width = 12,height = 6, device="pdf")
