@@ -391,8 +391,7 @@ model <- function(
 	train_tse <- train_phyloseq |>
 		mia::makeTreeSummarizedExperimentFromPhyloseq() |>
 		mia::agglomerateByRank(x = _, rank = "Genus") |>
-		mia::transformSamples(x = _, method = "relabundance") |>
-		mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr")
+		mia::transformSamples(x = _, method = "relabundance") 
 
 	catsystime("vegan & ecodist...")
 	train_beta <- t(assays(train_tse)$relabundance) |>
@@ -404,8 +403,7 @@ model <- function(
         test_tse <- test_phyloseq |>
                 mia::makeTreeSummarizedExperimentFromPhyloseq() |>
                 mia::agglomerateByRank(x = _, rank = "Genus") |>
-                mia::transformSamples(x = _, method = "relabundance") |>
-              	mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr")
+                mia::transformSamples(x = _, method = "relabundance") 
 
 	catsystime("vegan & ecodist...")
         test_beta <- t(assays(test_tse)$relabundance) |>
@@ -420,14 +418,14 @@ model <- function(
 		phylo |>
                 mia::makeTreeSummarizedExperimentFromPhyloseq() |>
                 mia::agglomerateByRank(x = _, rank = level) |>
-                mia::transformSamples(x = _, method = "relabundance") |>
-                mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr", name = "clr_transformation") |>
-                (\(x) { assay(x, "clr_transformation") })() |>
+                mia::transformSamples(x = _, method = "relabundance")  |>
+                (\(x) { assay(x, "relabundance") })() |>
 		(\(x) { x[which(!rownames(x) %in% c("s__", "g__", "f__", "o__", "c__", "p__", "k__", "d__")),] })()
 	}
 	# Training data relative abundances
 	catsystime("Training data relative abundances...")
 	train_relabus <- t(rbind(
+		pip(train_phyloseq, level = "Species"),
 		pip(train_phyloseq, level = "Genus"),
 		pip(train_phyloseq, level = "Family"),
 		pip(train_phyloseq, level = "Order"),
@@ -437,6 +435,7 @@ model <- function(
 	# Test data relative abundances
 	catsystime("Test data relative abundances...")
 	test_relabus <- t(rbind(
+		pip(test_phyloseq, level = "Species"),
 		pip(test_phyloseq, level = "Genus"),
 		pip(test_phyloseq, level = "Family"),
 		pip(test_phyloseq, level = "Order"),
