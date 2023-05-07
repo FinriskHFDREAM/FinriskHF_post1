@@ -21,20 +21,6 @@ coefs <- list()
 
 ###
 #
-# Load libraries
-#
-###
-library(survival)
-library(glmnet)
-library(microbiome)
-library(phyloseq)
-library(mia)
-library(TreeSummarizedExperiment)
-library(ecodist)
-library(vegan)
-
-###
-#
 # Define main model function
 #
 ###
@@ -623,7 +609,7 @@ model <- function(
 
 			# Store identified coefficients per module, and final element as the identified modules
 			# Post-challenge phase; store coefficients inside each module
-			coefs[[length(coefs)]] <<- list(
+			coefs[[length(coefs)+1]] <<- list(
 				coefs_module_agesex = module_agesex[[3]],
 				coefs_module_metamix = module_metamix[[3]],
 				coefs_module_alpha = module_alpha[[3]],
