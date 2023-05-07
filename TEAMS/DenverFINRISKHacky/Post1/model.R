@@ -21,6 +21,20 @@ coefs <- list()
 
 ###
 #
+# Load libraries
+#
+###
+library(survival)
+library(glmnet)
+library(microbiome)
+library(phyloseq)
+library(mia)
+library(TreeSummarizedExperiment)
+library(ecodist)
+library(vegan)
+
+###
+#
 # Define main model function
 #
 ###
@@ -37,8 +51,6 @@ model <- function(
 	# Which model submission version to use 
 	v,
 	# Alpha 'a', which controls the ratio of L1 (LASSO, a=1) to L2 (RR, a=0) regularization
-	# Post-challenge phase; test LASSO a=1
-	#a = 0.5,
 	a = 1,
 	# Additional parameters
 	# Run across multiple seeds
@@ -370,13 +382,11 @@ model <- function(
 	catsystime("Alpha diversity metrics")
 	# Alpha
 	catsystime("Training data...")
-	#print("Calculating microbiome::alpha for train cohort...")	
 	train_alpha <- train_phyloseq |>
 		microbiome::alpha() |>
 		imputationNaive()
 
 	catsystime("Test data...")
-	#print("Calculating microbiome::alpha for test cohort...")	
 	test_alpha <- test_phyloseq |>
 		microbiome::alpha() |>
 		imputationNaive()
@@ -391,7 +401,8 @@ model <- function(
 	train_tse <- train_phyloseq |>
 		mia::makeTreeSummarizedExperimentFromPhyloseq() |>
 		mia::agglomerateByRank(x = _, rank = "Genus") |>
-		mia::transformSamples(x = _, method = "relabundance") 
+		mia::transformSamples(x = _, method = "relabundance") |>
+		mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr")
 
 	catsystime("vegan & ecodist...")
 	train_beta <- t(assays(train_tse)$relabundance) |>
@@ -403,7 +414,8 @@ model <- function(
         test_tse <- test_phyloseq |>
                 mia::makeTreeSummarizedExperimentFromPhyloseq() |>
                 mia::agglomerateByRank(x = _, rank = "Genus") |>
-                mia::transformSamples(x = _, method = "relabundance") 
+                mia::transformSamples(x = _, method = "relabundance") |>
+                mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr")
 
 	catsystime("vegan & ecodist...")
         test_beta <- t(assays(test_tse)$relabundance) |>
@@ -418,14 +430,14 @@ model <- function(
 		phylo |>
                 mia::makeTreeSummarizedExperimentFromPhyloseq() |>
                 mia::agglomerateByRank(x = _, rank = level) |>
-                mia::transformSamples(x = _, method = "relabundance")  |>
-                (\(x) { assay(x, "relabundance") })() |>
+                mia::transformSamples(x = _, method = "relabundance") |>
+                mia::transformSamples(x = _, abund_values = "relabundance", pseudocount = 1, method = "clr", name = "clr_transformation") |>
+                (\(x) { assay(x, "clr_transformation") })() |>
 		(\(x) { x[which(!rownames(x) %in% c("s__", "g__", "f__", "o__", "c__", "p__", "k__", "d__")),] })()
 	}
 	# Training data relative abundances
 	catsystime("Training data relative abundances...")
 	train_relabus <- t(rbind(
-		pip(train_phyloseq, level = "Species"),
 		pip(train_phyloseq, level = "Genus"),
 		pip(train_phyloseq, level = "Family"),
 		pip(train_phyloseq, level = "Order"),
@@ -435,7 +447,6 @@ model <- function(
 	# Test data relative abundances
 	catsystime("Test data relative abundances...")
 	test_relabus <- t(rbind(
-		pip(test_phyloseq, level = "Species"),
 		pip(test_phyloseq, level = "Genus"),
 		pip(test_phyloseq, level = "Family"),
 		pip(test_phyloseq, level = "Order"),
@@ -524,7 +535,6 @@ model <- function(
 		}
 
 		# Bundle both train and test module predictions into a list
-		# Post-challenge phase: also return the coefficients
 		preds <- list()
 
 		# Submission 5 was a test for the less conservative $lambda.min, reverting back to more conservative $lambda.1se
@@ -532,6 +542,7 @@ model <- function(
 			# No longer functional
 			#pred <- predict(fit, newx = as.matrix(testx), s = cv$lambda.min, type = "response")
 		}else{
+			#pred <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")
 			# Return two list elements; first is for training data, second is for test data predictions (
 			preds[[1]] <- predict(fit, newx = as.matrix(trainx), s = cv$lambda.1se, type = "response")[,1]
 			preds[[2]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")[,1]
@@ -545,11 +556,6 @@ model <- function(
 	# Run across multiple RNG seeds to alleviate random binning effects
 	scores <- do.call("cbind", lapply(seeds, FUN=\(s){
 		catsystime(paste("\n\nRunning model CVs, with seed", s, "and alpha", a, "\n\n"))	
-
-		# Add new list of coefficients for the new seed
-		# Quick & dirty solution of using a global list of lists in 'coefs'
-		coefs[[length(coefs)+1]] <<- list()
-		names(length(coefs)) <- paste0("seed_", s) # Save name for the outer nested loop set seed
 
 		# Part I
 		set.seed(s)
@@ -629,22 +635,7 @@ model <- function(
 				coefs_modules = tmp[[3]]
 			)
 
-			# Return predictions themselves
-			print("Head of prediction prior to z-scaling:\n")
-			print(head(tmp[[2]]))
-
-			print("Mean of predictions prior:")
-			print(mean(tmp[[2]], na.rm=TRUE))
-
-			print("Stdev of predictions prior:")
-			print(sd(tmp[[2]], na.rm=TRUE))
-
-			ztmp <- zscale(tmp[[2]])
-
-			print("Head of z-scaled predictions:\n")
-			print(head(ztmp))
-
-			ztmp
+			zscale(tmp[[2]])
 		}
 	}))
 
@@ -913,6 +904,7 @@ res <- model(
 	train_phyloseq = train_phylo, # Training phyloseq object
 	test_phyloseq = test_phylo, # Train phyloseq object
 	v = subv, # Submission version
+	a = 1, # Changing to LASSO
 	seeds = 1:10 # Vector of random seeds to alleviate random binning effects, used for multiple runs
 )
 

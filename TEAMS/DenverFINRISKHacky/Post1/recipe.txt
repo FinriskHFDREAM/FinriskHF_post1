@@ -3,7 +3,7 @@ Bootstrap: docker
 FROM: bioconductor/bioconductor_docker:devel
 
 %labels
-  TDL, DenverFINRISKHacky post-challenge submission
+  TDL, DenverFINRISKHacky post-challenge submission 1 revised
 
 %help
   DenverFINRISKHacky singularity image
@@ -13,7 +13,7 @@ FROM: bioconductor/bioconductor_docker:devel
 # Install CRAN packages
 R --slave -e 'install.packages(c("Matrix", "glmnet", "ecodist", "vegan", "survival"))'
 
-# Install Bioconductor packages using the versions available at Jan 2023
+# Install Bioconductor packages
 R --slave -e 'BiocManager::install(c("microbiome", "phyloseq", "TreeSummarizedExperiment", "mia"))'
 
 %runscript
