@@ -13,9 +13,9 @@ PARAM <- list()
 PARAM$folder.R <- paste0(args[1]) 
 PARAM$folder.data <- paste0(PARAM$folder.R, "/")
 
-test_path <- paste0(PARAM$folder.data, "input_real/scoring_nohide/pheno_scoring_nohide.csv")        # add path to test data
-sb2_path <- paste0(PARAM$folder.data, "TEAMS/SB2/output_ori/scores.csv")        # add path to sb2 scores
-denver_path <- paste0(PARAM$folder.data, "TEAMS/DenverFINRISKHacky/output_ori/scores.csv")      # add path to denver scores
+test_path <- paste0(PARAM$folder.data, "input_real/train/pheno_training.csv")        # add path to test data
+sb2_path <- paste0(PARAM$folder.data, "TEAMS/SB2/output_ori/scores_train.csv")        # add path to sb2 scores
+denver_path <- paste0(PARAM$folder.data, "TEAMS/DenverFINRISKHacky/output_ori/scores_train.csv")      # add path to denver scores
 
 source(paste0(PARAM$folder.data, "code/teststats.r"))  # add complete path to this script
 
@@ -137,8 +137,8 @@ ggscatter(
   color = "team"
 ) +
   facet_wrap(~variable , scales = "free") +
-  ylab(label = "C-Index")
-ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare.pdf")),width = 12,height = 6, device="pdf")
+  ylab(label = "C-Index")+theme(axis.text.x = element_text(size = 11))  
+ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare.pdf")),width = 14,height = 7, device="pdf")
 
 toPlot_h <- toPlot[which(toPlot$metric == "holmes"), ]
 ggscatter(
@@ -148,5 +148,5 @@ ggscatter(
   color = "team"
 ) +
   facet_wrap(~variable , scales = "free") +
-  ylab(label = "Hoslem test")
-ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare.pdf")),width = 12,height = 6, device="pdf")
+  ylab(label = "Hoslem test")+theme(axis.text.x = element_text(size = 11))   
+ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare.pdf")),width = 14,height = 7, device="pdf")
