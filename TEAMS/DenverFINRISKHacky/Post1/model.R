@@ -515,6 +515,10 @@ model <- function(
 		trainx <- trainx[which(!is.na(trainy)),]
 		trainy <- trainy[which(!is.na(trainy))]
 
+		# Assign 0 values to non-finite input (i.e. NA/NaN/+-Inf)
+		trainx[!is.finite(trainx)] <- 0
+		trainy[!is.finite(trainy)] <- 0
+
 		# Fit, CV, predict
 		# sub >=6; changing type.measure to C-index, LASSO alpha == 1 to Elastic Net alpha == 0.5; alpha 'a' given as global parameter in main model function
 		fit <- glmnet(x = as.matrix(trainx), y = trainy, family = "cox", alpha = a)
