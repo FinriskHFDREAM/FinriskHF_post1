@@ -21,6 +21,20 @@ coefs <- list()
 
 ###
 #
+# Load libraries
+#
+###
+library(survival)
+library(glmnet)
+library(microbiome)
+library(phyloseq)
+library(mia)
+library(TreeSummarizedExperiment)
+library(ecodist)
+library(vegan)
+
+###
+#
 # Define main model function
 #
 ###
@@ -609,7 +623,7 @@ model <- function(
 
 			# Store identified coefficients per module, and final element as the identified modules
 			# Post-challenge phase; store coefficients inside each module
-			coefs[[length(coefs)+1]] <<- list(
+			coefs[[length(coefs)]] <<- list(
 				coefs_module_agesex = module_agesex[[3]],
 				coefs_module_metamix = module_metamix[[3]],
 				coefs_module_alpha = module_alpha[[3]],
@@ -661,7 +675,13 @@ outscale <- \(x){ (x - min(x, na.rm=TRUE))/(max(x, na.rm=TRUE) - min(x, na.rm=TR
 # Just left shift variables to start at zero
 shift <- \(x){ (x-min(x, na.rm=TRUE)) }
 # Scale variables with z transformation
-zscale <- \(x){ (x-mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE) }
+zscale <- \(x){
+	if(sd(x, na.rm=TRUE) == 0){
+		rep(0, times=length(x)) # Singular vector, returning unit values
+	}else{
+		(x-mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE) # sd != 0, can apply z-score normalization
+	}
+}
 # Left shifted and squared
 sqshift <- \(x){ (x-min(x, na.rm=TRUE))^2 }
 # Left shifted and n*log(n+1) multiplied
