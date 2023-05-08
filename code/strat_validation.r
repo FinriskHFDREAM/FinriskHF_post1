@@ -137,7 +137,7 @@ ggscatter(
   color = "team"
 ) +
   facet_wrap(~variable , scales = "free") +
-  ylab(label = "C-Index")+theme(axis.text.x = element_text(size = 11))  
+  ylab(label = "C-Index")+theme(axis.text.x = element_text(size = 8))  
 ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare.pdf")),width = 14,height = 7, device="pdf")
 
 toPlot_h <- toPlot[which(toPlot$metric == "holmes"), ]
@@ -148,5 +148,5 @@ ggscatter(
   color = "team"
 ) +
   facet_wrap(~variable , scales = "free") +
-  ylab(label = "Hoslem test")+theme(axis.text.x = element_text(size = 11))   
+  ylab(label = "Hoslem test")+theme(axis.text.x = element_text(size = 8))   
 ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare.pdf")),width = 14,height = 7, device="pdf")
