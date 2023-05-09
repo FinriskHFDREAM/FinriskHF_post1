@@ -511,6 +511,10 @@ model <- function(
 		testx,
 		...
 	){
+		# Cast data matrices to a matrix to avoid issues with data.frames
+		trainx <- as.matrix(trainx)
+		testx <- as.matrix(testx)
+	
 		# Omit training samples with NAs for response
 		trainx <- trainx[which(!is.na(trainy)),]
 		trainy <- trainy[which(!is.na(trainy))]
@@ -521,8 +525,8 @@ model <- function(
 
 		# Fit, CV, predict
 		# sub >=6; changing type.measure to C-index, LASSO alpha == 1 to Elastic Net alpha == 0.5; alpha 'a' given as global parameter in main model function
-		fit <- glmnet(x = as.matrix(trainx), y = trainy, family = "cox", alpha = a)
-		cv <- cv.glmnet(x = as.matrix(trainx), y = trainy, family = "cox", type.measure = "C", alpha = a)
+		fit <- glmnet(x = trainx, y = trainy, family = "cox", alpha = a)
+		cv <- cv.glmnet(x = trainx, y = trainy, family = "cox", type.measure = "C", alpha = a)
 
 		vars <- colnames(trainx)[predict(fit, s = cv$lambda.1se, type = "nonzero")[[1]]]
 
@@ -627,7 +631,7 @@ model <- function(
 
 			# Store identified coefficients per module, and final element as the identified modules
 			# Post-challenge phase; store coefficients inside each module
-			coefs[[length(coefs)]] <<- list(
+			coefs[[length(coefs)+1]] <<- list(
 				coefs_module_agesex = module_agesex[[3]],
 				coefs_module_metamix = module_metamix[[3]],
 				coefs_module_alpha = module_alpha[[3]],
@@ -915,7 +919,7 @@ res <- model(
 	test_phyloseq = test_phylo, # Train phyloseq object
 	v = subv, # Submission version
 	a = 1, # Changing to LASSO
-	seeds = 1:10 # Vector of random seeds to alleviate random binning effects, used for multiple runs
+	seeds = 1:2 # Vector of random seeds to alleviate random binning effects, used for multiple runs
 )
 
 # Provide debug output
