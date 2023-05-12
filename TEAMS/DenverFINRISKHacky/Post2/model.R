@@ -626,7 +626,7 @@ model <- function(
 		)
 
 		print("Head of the aggregated nested regularized module prediction for test data prior to z-scaling:")
-		print(head(tmp[[2]])
+		print(head(tmp[[2]]))
 
 		zscale(tmp[[2]])
 	}))
