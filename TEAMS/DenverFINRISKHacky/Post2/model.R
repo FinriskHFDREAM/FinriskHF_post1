@@ -483,7 +483,7 @@ model <- function(
 	# Interactions between the trinarized indicators and relative abundances
 	train_tri <- interact.part(train_tri, first = colnames(train_tri)[1:ncol(train_tricomb)], second = colnames(train_tri)[(ncol(train_tricomb)+1):ncol(train_tri)])
 
-	catsystime("Test data trinary stratified Family-/Phylum-taxa relative abundances...")
+	catsystime("Test data trinary stratified Family-taxa relative abundances...")
 
 	# Use Family and Phylum level taxa, appeared to be prevalent in literature and possibly strong enough signal with respect to trinarized strata
 	test_tri <- cbind(test_tricomb, 
@@ -524,7 +524,6 @@ model <- function(
 
 		if(!is.null(vars) & length(vars)>0){
 			print("lambda.1se, non-zero coefs:")			
-			#print(colnames(trainx)[predict(fit, s = cv$lambda.1se, type = "nonzero")[[1]]])
 			print(data.frame(
 				Variable = colnames(trainx)[predict(fit, s = cv$lambda.1se, type = "nonzero")[[1]]],
 				Coef = predict(fit, s = cv$lambda.1se, type = "coefficient")[predict(fit, s = cv$lambda.1se, type = "nonzero")[[1]]]
@@ -537,18 +536,11 @@ model <- function(
 		# Bundle both train and test module predictions into a list
 		preds <- list()
 
-		# Submission 5 was a test for the less conservative $lambda.min, reverting back to more conservative $lambda.1se
-		if(v == 5){
-			# No longer functional
-			#pred <- predict(fit, newx = as.matrix(testx), s = cv$lambda.min, type = "response")
-		}else{
-			#pred <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")
-			# Return two list elements; first is for training data, second is for test data predictions (
-			preds[[1]] <- predict(fit, newx = as.matrix(trainx), s = cv$lambda.1se, type = "response")[,1]
-			preds[[2]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")[,1]
-			# Post-challenge phase, also return the used coefficients
-			preds[[3]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "coefficients")[,1]
-		}
+		# Return two list elements; first is for training data, second is for test data predictions (
+		preds[[1]] <- predict(fit, newx = as.matrix(trainx), s = cv$lambda.1se, type = "response")[,1]
+		preds[[2]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")[,1]
+		# Post-challenge phase, also return the used coefficients
+		preds[[3]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "coefficients")[,1]
 
 		preds
 	}
@@ -610,43 +602,33 @@ model <- function(
 		print("Temp test prediction output head")
 		print(head(output_temp))
 
-		# Submissions 1-3 were not penalized Cox ensembles
-		if(v < 4){
-			print("Regularized derived features combined into Cox PH")
-			ensemble_cox <- coxph(Surv(event = Event, time = Event_time) ~ module_agesex + module_metamix + module_genus_glmnet + module_family_glmnet + module_alpha_glmnet + module_beta_glmnet, data = ensemble_temp)
-			print("Identified ensemble coefficients (coxph)")
-			print(summary(ensemble_cox))
 
-			# Part III: Construct the predicted test data score as a combination of weighted ensemble components
-			# Combine modules to final output
-			print("Pt III")
-			output_final[,"Score"] <- predict(ensemble_cox, newdata = output_temp)	
-		# Submissions 4+ testing penalized Cox ensembles (nested basically); sub 4 is more conservative with lambda.1se, sub 5 is lambda.min
-		}else{
-			catsystime("-- Final modules to include, nested regularization --")
-			w1 <- grep("module", colnames(ensemble_temp), value = TRUE)
-			w2 <- grep("module", colnames(output_temp), value = TRUE)
-			# Return scores from this particular seed; standardize output via z-scores
-			tmp <- module_glmnet(trainx = ensemble_temp[,w1], trainy = train_y, test = output_temp[,w2])
+		catsystime("-- Final modules to include, nested regularization --")
+		w1 <- grep("module", colnames(ensemble_temp), value = TRUE)
+		w2 <- grep("module", colnames(output_temp), value = TRUE)
+		# Return scores from this particular seed; standardize output via z-scores
+		tmp <- module_glmnet(trainx = ensemble_temp[,w1], trainy = train_y, test = output_temp[,w2])
 
-			# Store identified coefficients per module, and final element as the identified modules
-			# Post-challenge phase; store coefficients inside each module
-			coefs[[length(coefs)+1]] <<- list(
-				coefs_module_baseclin = module_baseclin[[3]],
-				coefs_module_agesex = module_agesex[[3]],
-				coefs_module_metamix = module_metamix[[3]],
-				coefs_module_alpha = module_alpha[[3]],
-				coefs_module_beta = module_beta[[3]],
-				coefs_module_relabus = module_relabus[[3]],
-				coefs_module_curated1 = module_curated1[[3]],
-				coefs_module_curated2 = module_curated2[[3]],
-				coefs_module_trinaryfamily = module_trinaryfamily[[3]],
-				coefs_module_species = module_species[[3]],
-				coefs_modules = tmp[[3]]
-			)
+		# Store identified coefficients per module, and final element as the identified modules
+		# Post-challenge phase; store coefficients inside each module
+		coefs[[length(coefs)+1]] <<- list(
+			coefs_module_baseclin = module_baseclin[[3]],
+			coefs_module_agesex = module_agesex[[3]],
+			coefs_module_metamix = module_metamix[[3]],
+			coefs_module_alpha = module_alpha[[3]],
+			coefs_module_beta = module_beta[[3]],
+			coefs_module_relabus = module_relabus[[3]],
+			coefs_module_curated1 = module_curated1[[3]],
+			coefs_module_curated2 = module_curated2[[3]],
+			coefs_module_trinaryfamily = module_trinaryfamily[[3]],
+			coefs_module_species = module_species[[3]],
+			coefs_modules = tmp[[3]]
+		)
 
-			zscale(tmp[[2]])
-		}
+		print("Head of the aggregated nested regularized module prediction for test data prior to z-scaling:")
+		print(head(tmp[[2]])
+
+		zscale(tmp[[2]])
 	}))
 
 	# Head of scores over different seeds
