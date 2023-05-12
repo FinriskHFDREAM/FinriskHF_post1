@@ -552,7 +552,7 @@ model <- function(
 		# Part I
 		set.seed(s)
 		catsystime("\nmodule_baseclin\n")
-		module_agesex <- module_glmnet(trainx = train_baseclin, trainy = train_y, test = test_baseclin)
+		module_baseclin <- module_glmnet(trainx = train_baseclin, trainy = train_y, test = test_baseclin)
 		catsystime("\nmodule_agesex\n")
 		module_agesex <- module_glmnet(trainx = train_clin, trainy = train_y, test = test_clin)
 		catsystime("\nmodule_metamix\n")
@@ -567,10 +567,10 @@ model <- function(
 		module_curated1 <- module_glmnet(trainx = train_curated1, trainy = train_y, test = test_curated1)
 		catsystime("\nmodule_curated2\n")
 		module_curated2 <- module_glmnet(trainx = train_curated2, trainy = train_y, test = test_curated2)
-		catsystime("\nmodule_trinaryfamilyphylum\n")
+		catsystime("\nmodule_trinaryfamily\n")
 		module_trinaryfamily <- module_glmnet(trainx = train_tri, trainy = train_y, test = test_tri)
 		catsystime("\nmodule_species\n")
-		module_species <- module_glmnet(trainx = train_abuspecies, trainy = train_y, test = test_abuspecies)
+		module_species <- module_glmnet(trainx = t(train_abuspecies), trainy = train_y, test = t(test_abuspecies))
 
 		catsystime("Pt Ia")	
 		ensemble_temp[,"module_baseclin"] <- module_baseclin[[1]]
@@ -730,7 +730,7 @@ interact.all <- function(input){
 	output <- do.call("cbind", lapply(1:ncol(input), FUN=function(z){ 
 		do.call("cbind", lapply(z:ncol(input), FUN=function(x){
 			tmp <- data.frame(input[,z] * input[,x])
-			colnames(tmp)[1] <- paste(colnames(input)[z], "x", colnames(input)[x], sep="") 
+			colnames(tmp)[1] <- paste(colnames(input)[z], "_X_", colnames(input)[x], sep="") 
 			tmp
 		}))
 	}))
@@ -740,7 +740,7 @@ interact.part <- function(input, first, second){
 	output <- do.call("cbind", lapply(first, FUN=function(z){ 
 		do.call("cbind", lapply(second, FUN=function(x){
 			tmp <- data.frame(input[,z] * input[,x])
-			colnames(tmp)[1] <- paste(z, "x", x, sep="") 
+			colnames(tmp)[1] <- paste(z, "_X_", x, sep="") 
 			tmp
 		}))
 	}))
