@@ -507,6 +507,12 @@ model <- function(
 		trainx <- as.matrix(trainx)
 		testx <- as.matrix(testx)
 	
+		# Sanitize column and rownames to capped length spanning from the end and removing special symbols such a ':'
+		rownames(trainx) <- sanitize(rownames(trainx), charlimit=50)
+		rownames(testx) <- sanitize(rownames(testx), charlimit=50)
+		colnames(trainx) <- sanitize(colnames(trainx), charlimit=50)
+		colnames(testx) <- sanitize(colnames(testx), charlimit=50)
+		
 		# Omit training samples with NAs for response
 		trainx <- trainx[which(!is.na(trainy)),]
 		trainy <- trainy[which(!is.na(trainy))]
@@ -661,6 +667,16 @@ model <- function(
 # Helper functions
 #
 ###
+
+# Variable name sanitization; cap character length and remove special problematic symbols
+sanitize <- \(x, charlimit = 50){
+	# Crop to the end of the character string
+	x <- c(unlist(lapply(x, FUN=\(q){
+		substr(q, start=max(1, nchar(q)-charlimit+1), stop=nchar(q))
+	})))
+	# Sanitize special symbols
+	gsub(":", "", x)	
+}
 
 # Scale risk scores between [0,1]
 outscale <- \(x){ (x - min(x, na.rm=TRUE))/(max(x, na.rm=TRUE) - min(x, na.rm=TRUE)) }
