@@ -1,4 +1,5 @@
 input_real/
+input_syn/input_challenge/scoring
 TEAMS/SB2/sim_image
 TEAMS/SB2/output_ori/scores.csv
 TEAMS/DenverFINRISKHacky/sim_image
@@ -26,3 +27,10 @@ TEAMS/SB2/ref_v3/scores_uniFDR.csv
 TEAMS/SB2/ref_v3/scores_gboost.csv
 TEAMS/SB2/ref_v3/scores_lasso-1se.csv
 TEAMS/SB2/ref_v3/scores_lasso-BIC.csv
+TEAMS/SB2/ref_v4/scores_lasso.csv
+TEAMS/SB2/ref_v4/scores_enet.csv
+TEAMS/SB2/ref_v4/scores_alassoU.csv
+TEAMS/SB2/ref_v4/scores_uniFDR.csv
+TEAMS/SB2/ref_v4/scores_gboost.csv
+TEAMS/SB2/ref_v4/scores_lasso-1se.csv
+TEAMS/SB2/ref_v4/scores_lasso-BIC.csv
