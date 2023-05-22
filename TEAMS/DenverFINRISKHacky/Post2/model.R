@@ -424,6 +424,11 @@ model <- function(
 		trainx[!is.finite(trainx)] <- 0
 		trainy[!is.finite(trainy)] <- 0
 
+		# Debugging info
+		print("Debugging; print first 3 rows and 3 first columns from the processed train and test data prior to running glmnet and cv.glmnet")
+		print(trainx[1:3,1:3])
+		print(testx[1:3,1:3])
+
 		# Fit, CV, predict
 		# sub >=6; changing type.measure to C-index, LASSO alpha == 1 to Elastic Net alpha == 0.5; alpha 'a' given as global parameter in main model function
 		fit <- glmnet(x = trainx, y = trainy, family = "cox", alpha = a)
