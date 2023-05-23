@@ -456,6 +456,10 @@ model <- function(
 		# Post-challenge phase, also return the used coefficients
 		preds[[3]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "coefficients")[,1]
 
+		# Debugging; in case any of the predictions are non-finite, replace them with the median
+		preds[[1]][!is.finite(preds[[1]])] <- median(preds[[1]], na.rm=TRUE)
+		preds[[2]][!is.finite(preds[[2]])] <- median(preds[[2]], na.rm=TRUE)
+
 		preds
 	}
 
