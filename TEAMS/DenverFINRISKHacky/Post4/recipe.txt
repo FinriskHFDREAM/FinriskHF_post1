@@ -1,0 +1,21 @@
+Bootstrap: docker
+# Use Bioconductor as base image
+FROM: bioconductor/bioconductor_docker:devel
+
+%labels
+  TDL, DenverFINRISKHacky post-challenge submission 4 - test Post2 model performance if modular structure is omitted
+
+%help
+  DenverFINRISKHacky singularity image
+
+%post
+
+# Install CRAN packages
+R --slave -e 'install.packages(c("Matrix", "glmnet", "ecodist", "vegan", "survival"))'
+
+# Install Bioconductor packages
+R --slave -e 'BiocManager::install(c("microbiome", "phyloseq", "TreeSummarizedExperiment", "mia"))'
+
+%runscript
+  exec Rscript model.R "$@"
+  
