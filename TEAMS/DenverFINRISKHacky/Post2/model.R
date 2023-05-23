@@ -133,103 +133,6 @@ model <- function(
 	train_abudomain <- microbiome::abundances(microbiome::aggregate_taxa(train_phyloseq, level = "Domain"), transform="compositional")
 	test_abudomain <- microbiome::abundances(microbiome::aggregate_taxa(test_phyloseq, level = "Domain"), transform="compositional")
 	
-	## Common important themes
-	# - Elevated TMA/TMAO are bad for cardivascular health (-> anything that allows increased levels of them is a risk factor and vice versa)
-	# - Diet/disease burden/etc important other factors (info not available)
-	# - Info available on diabetes, BMI (obesity), ... -> interactions with phenodata?
-	
-	# Brief literature sweeps;
-	# - Rahman et al. The Gut Microbiota (Microbiome) in Cardiovascular Disease and Its Therapeutic Regulation, Front Cell Infect Microbiol, 2022:
-	# https://pubmed.ncbi.nlm.nih.gov/35795187/
-	#
-	# > Atherosclerosis: Increased Lactobacillus (Genus?), decrease Roseburiam (Genus?) -> increased TMAO (multiple references)
-	# > Hypertension: Bacteroidetes (Phylum) /Firmicutes (Phylum) ratio as a marker for dysbiosis -> increased SCFA (multiple references)
-	# > Heart Failure: Increased Escherichia coli (Species), Klebsiella pneumonia (Species), Streptococcus viridians (Species)[missing from taxa] > increased TMAO (multiple references)
-	# > Chronic Kidney Disease: Increased Firmicutes (Phylum), proteobacteria (Phylum), actinobacteria (Phylum) > Increase Indoxyl sulfate, p-cresol sulfate (multiple references)
-
-	# - Masenga et al. Recent advances in modulation of cardiovascular diseases by the gut microbiota, 2022:
-	# https://www.nature.com/articles/s41371-022-00698-6
-	#
-	# > "It has been shown that atheromatous plaques of patients with coronary artery disease (CAD) 
-	#   contain pathogenic Staphylococcus species, Proteus vulgaris, Klebsiella pneumoniae, and Streptococcus 
-	#   species [7]. Their guts exhibit an increase in Lactobacillus, Streptococcus, Esherichia, Shigella and 
-	#   Enterococcus species, concomitant with a reduction in Faecalibacterium, Subdoligranulum, Roseburia, 
-	#   Eubacterium rectale and Bacteroides fragilis species, the latter group known to regulate T-cell functions 
-	#   in the gut mucosa with consequent anti-inflammatory effects and protection of the gut barrier [7, 14]. 
-	#   In patients at high risk for stroke, there is a reduction in butyrate-producing bacteria such as those 
-	#   of the Lachnospiraceae and Ruminococcaceae family, resulting in reduced fecal butyrate levels and concomitant 
-	#   increases in intestinal pathogens such as those of the Enterobacteriaceae and Veillonellaceae family [7]."
-	# > "An elegant systematic review and meta-analysis of randomized, controlled trials showed that probiotics 
-	#   containing Lactobacillus spp are effective in blood pressure regulation if used in sufficient amount 
-	#   for at least 8 weeks [38]."
-	# > Multiple points regarding sex and micriobiota, aging and micriobiota, specific findings for SCFA
-	# > "Certain microbial species in the gut can inactivate or lessen the potency of drugs prescribed to aid the 
-	#   management of CVDs. The therapeutic effects of statins are attenuated by abundant presence of Lactobacillus, 
-	#   Eubacterium, Faecalibacterium, and Bifidobacterium and decreased proportion of genus Clostridium [5], which 
-	#   renders these drugs relatively ineffective in decreasing LDL levels. Similarly, treatment of atrial fibrillation, 
-	#   atrial flutter, and heart failure using digoxin may not be efficacious when Eggerthella lenta strains are abundant, 
-	#   since they inactivate this drug [5]. Conversely, therapeutic drugs may alter the microbiota. For example, metformin, 
-	#   the glucose lowering drug used in diabetes mellitus treatment, cancers, CVD and other conditions increases the 
-	#   amount of pathogenic Escherichia-Shigella species [5]."
-	
-	# Astudillo & Mayrovitz: The Gut Microbiome and Cardiovascular Disease, 2021
-	# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8121206/
-	#
-	# > "Recent studies have also shown that butyric acid-producing Clostridiales strains 
-	#   (Roseburia and Faecalibacterium prausnitzii) were found to be decreased in patients 
-	#   with type 2 diabetes mellitus, but non-butyrate producing Clostridiales and pathogens 
-	#   such as Clostridium clostridioforme were increased [14,15]."
-	# > "Patients with inflammatory bowel disease (IBD), a chronic intestinal condition, have 
-	#   an up to three-fold higher risk for developing venous thromboembolic (VTE) complications 
-	#   compared to the general population [37]. Additionally, mucin degrading bacterial species 
-	#   such as Lachnospiraceae and Ruminococcus are more abundant in patients with irritable 
-	#   bowel syndrome (IBS) [38]"
-
-
-	## Coronary artery disease (CAD):
-	#
-	# - Cui et al. 2017 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5401719/
-	#
-	# > Increased relabu in patients: Firmicutes (phylum)
-	# > Decreased relabu in patients: Bacteroidetes (phylum)
-	#
-	# - Jie et al. 2017 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5635030/
-	# 
-	# > Increased relabu in patients: Enterobacteriaceae (family), Streptococcus (species)[or genus rather?]
-	# > Decreased relabu in patients: Roseburia Intestinalis (species) and Faecalibacterium Prausnitzii (species)
-	#
-	# - Zhu et al 2018 https://pubmed.ncbi.nlm.nih.gov/30192713/
-	#
-	# > Increased relabu in patients: Escherichia-Shigella (species)[not in taxa] and Enterococcus (genus)
-	# > Decreased relabu in patients: Faecalibacterium (genus)[only taxa present is Faecalibacterium Prausnatzii], Roseburia (genus), Subdoligranulum (genus) and Eubacterium rectale (species)[not in taxa]
-	#
-
-	## Heart failure patients (HFP):
-	#
-	# - Luedde et al. 2017 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5542738/ 
-	#
-	# Decreased relabu in patients: Coriobacteriaceae (family), Erysipelotrichaceae (family), Ruminococcaceae (family), Blautia (genus)
-	#
-	# - Kamo et al. 2017 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5362204/
-	#
-	# Here, low sample size (~20)
-	# Decreased relabu in patients: Eubacterium rectale (species), Dorea( )longicatena (species)
-	# Depleted relabu in patients (older patients only): Faecalibacterium (genus)
-	#	
-	# Increased relabu in patients: Ruminococcus gnavus (species)	
-	# Decreased relabu in patients: Faecalibacterium Prausnitzii (species)
-	#
-	# - Kummen et al. 2018 https://pubmed.ncbi.nlm.nih.gov/29519360/
-	# - Mayerhofer et al. 2020 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7160496/ 
-	#
-	# Increased relabu in patients: Prevotella (genus), Hungatella (genus), Succiniclasticum (genus)
-	# Decreased relabu in patients: Lachnospiracea (family), Ruminococcaceae: Faecalibacterium (genus), Bifidobacteriaceae: Bifidobacterium (genus)
-	#
-	# > B/F ratio (or F/B)
-
-	# Bacteroidetes to Firmicutes ratio appears multiple times, appears notable in multiple contexts as a marker for dysbiosis
-	# Taxa greps mostly included also plasmid variants, collapsing them together
-	
 	# Certain taxa of interest from various levels taken from literature
 	train_curated1 <- data.frame(
 		p__Firmicutes = apply(train_abuphylum[grep("p__Firmicutes", rownames(train_abuphylum), value=TRUE),,drop=FALSE], MARGIN=2, FUN=sum),
@@ -521,6 +424,11 @@ model <- function(
 		trainx[!is.finite(trainx)] <- 0
 		trainy[!is.finite(trainy)] <- 0
 
+		# Debugging info
+		print("Debugging; print first 3 rows and 3 first columns from the processed train and test data prior to running glmnet and cv.glmnet")
+		print(trainx[1:3,1:3])
+		print(testx[1:3,1:3])
+
 		# Fit, CV, predict
 		# sub >=6; changing type.measure to C-index, LASSO alpha == 1 to Elastic Net alpha == 0.5; alpha 'a' given as global parameter in main model function
 		fit <- glmnet(x = trainx, y = trainy, family = "cox", alpha = a)
@@ -547,6 +455,10 @@ model <- function(
 		preds[[2]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "response")[,1]
 		# Post-challenge phase, also return the used coefficients
 		preds[[3]] <- predict(fit, newx = as.matrix(testx), s = cv$lambda.1se, type = "coefficients")[,1]
+
+		# Debugging; in case any of the predictions are non-finite, replace them with the median
+		preds[[1]][!is.finite(preds[[1]])] <- median(preds[[1]], na.rm=TRUE)
+		preds[[2]][!is.finite(preds[[2]])] <- median(preds[[2]], na.rm=TRUE)
 
 		preds
 	}
@@ -631,8 +543,8 @@ model <- function(
 			coefs_modules = tmp[[3]]
 		)
 
-		print("Head of the aggregated nested regularized module prediction for test data prior to z-scaling:")
-		print(head(tmp[[2]]))
+		print("Aggregated nested regularized module prediction for test data prior to z-scaling:")
+		print(tmp[[2]])
 
 		zscale(tmp[[2]])
 	}))
@@ -684,10 +596,10 @@ outscale <- \(x){ (x - min(x, na.rm=TRUE))/(max(x, na.rm=TRUE) - min(x, na.rm=TR
 shift <- \(x){ (x-min(x, na.rm=TRUE)) }
 # Scale variables with z transformation
 zscale <- \(x){
-	if(sd(x, na.rm=TRUE) == 0){
+	if(stats::sd(x, na.rm=TRUE) == 0){
 		rep(0, times=length(x)) # Singular vector, returning unit values
 	}else{
-		(x-mean(x, na.rm=TRUE))/sd(x, na.rm=TRUE) # sd != 0, can apply z-score normalization
+		(x-mean(x, na.rm=TRUE))/stats::sd(x, na.rm=TRUE) # sd != 0, can apply z-score normalization
 	}
 }
 # Left shifted and squared
