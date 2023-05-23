@@ -1,0 +1,261 @@
+---
+title: "Summary"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NULL, cache=TRUE)
+options(width=90)
+knitr::opts_knit$set(root.dir = "~/git/FinriskHF_post1/TEAMS/SB2/")
+
+require(dplyr)
+require(ggplot2)
+require(ggpubr)
+
+```
+
+
+
+## Summary of performances of all models 
+
+```{r echo=FALSE, message=FALSE}
+refs <- c("ref_v1", "ref_v2", "ref_v3", "ref_v4")
+
+res <- lapply(refs, function(ref) {
+  
+  files <- list.files(ref, patter = ".csv")
+  
+  metrics <- list()
+  for (i in seq_along(files)) {
+    metrics[[i]] <- readr::read_csv(file.path(ref, files[i]))
+  }
+  metrics <- data.table::rbindlist(metrics)
+  metrics$model <- gsub(".stats.csv", "", sapply(strsplit(files, "_"), "[", 2))
+  metrics$ref <- gsub("/", "", ref)
+  
+  return(metrics)
+  
+})
+
+# Print all
+res <- data.table::rbindlist(res)
+```
+
+```{r}
+# Filter by performance
+best <- 
+  res %>% 
+  filter(
+    hoslem_test > 0.01,
+    harrell_c > 0.83
+  ) %>% 
+  mutate(
+    calibrated = ifelse(hoslem_test > 0.05, "Calibrated", "Non-calibrated"),
+    model = paste0(model, ref, sep = "_"),
+    hoslem_test = round(hoslem_test, 3),
+    harrell_c = round(harrell_c, 3)
+  )
+
+DT::datatable(best)
+```
+
+
+```{r echo=FALSE}
+# Plot performances
+ggpubr::ggdotchart(
+  best, 
+  x = "model",
+  y = "harrell_c",
+  color = "calibrated", 
+  size = "hoslem_test") +
+  facet_grid(~calibrated, scales = "free_x") +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 7),
+    axis.text.x = element_text(angle = 90, hjust = 1),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+```
+
+
+## Variable importance plots
+
+```{r include=FALSE}
+models_v2 <- as.data.frame(unlist(readRDS("ref_v2/models.rds")))
+models_v3 <- as.data.frame(unlist(readRDS("ref_v3/models.rds")))
+models_v4 <- as.data.frame(unlist(readRDS("ref_v4/models.rds")))
+
+betas <- rbind.data.frame(
+  data.frame(beta = models_v2[, 1], version = "v2", model = rownames(models_v2)),
+  data.frame(beta = models_v3[, 1], version = "v3", model = rownames(models_v3)),
+  data.frame(beta = models_v4[, 1], version = "v4", model = rownames(models_v4))
+)
+
+betas <- data.frame(
+  model = sapply(strsplit(betas$model, ".", fixed = TRUE), "[", 1),
+  variable = sapply(strsplit(betas$model, ".", fixed = TRUE), "[", 2),
+  beta = abs(betas$beta),
+  version = betas$version
+)
+```
+
+
+### Calibrated models
+
+```{r include=FALSE}
+# Extract best calibrated models
+gboost_v2 <-  
+  betas %>% 
+  filter(
+    version == "v2",
+    model == "gboost"
+  )
+
+lassoBIC_v2 <-  
+  betas %>% 
+  filter(
+    version == "v2",
+    model == "lasso-BIC"
+  )
+
+uniFDR_v2 <-  
+  betas %>% 
+  filter(
+    version == "v2",
+    model == "uniFDR"
+  )
+
+gboost_v3 <-  
+  betas %>% 
+  filter(
+    version == "v3",
+    model == "gboost"
+  )
+
+lassoBIC_v3 <-  
+  betas %>% 
+  filter(
+    version == "v3",
+    model == "lasso-BIC"
+  )
+
+uniFDR_v3 <-  
+  betas %>% 
+  filter(
+    version == "v3",
+    model == "uniFDR"
+  )
+
+lassoBIC_v4 <-  
+  betas %>% 
+  filter(
+    version == "v4",
+    model == "lasso-BIC"
+  )
+
+# Plotting
+toPlot <- rbind.data.frame(gboost_v2, lassoBIC_v2, uniFDR_v2, gboost_v3, lassoBIC_v3, uniFDR_v3, lassoBIC_v4)
+toPlot$type <- "covariates"
+toPlot$type[grep("cluster_", toPlot$variable)] <- "microbiome"
+toPlot$type[grep("p__", toPlot$variable)] <- "microbiome"
+toPlot$model <- paste(toPlot$model, toPlot$version, sep = "_")
+head(toPlot)
+plot <- 
+  ggplot(
+    toPlot,
+    aes(
+      x = reorder(variable, beta),
+      y = beta,
+      color = type)) +
+  geom_point() +
+  geom_segment(aes(xend = variable, yend = 0)) +
+  coord_flip() + 
+  facet_grid(~model) +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 7),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r echo=FALSE}
+print(plot)
+```
+
+
+### Non-calibrated models
+
+```{r include=FALSE}
+# Extract best non calibrated models
+alassoU_v2 <- 
+  betas %>% 
+  filter(
+    version == "v2",
+    model == "alassoU"
+  )
+
+alassoU_v3 <- 
+  betas %>% 
+  filter(
+    version == "v3",
+    model == "alassoU"
+  )
+
+lasso1se_v3 <- 
+  betas %>% 
+  filter(
+    version == "v3",
+    model == "lasso-1se"
+  )
+
+alassoU_v4 <- 
+  betas %>% 
+  filter(
+    version == "v4",
+    model == "alassoU"
+  )
+
+gboost_v4 <- 
+  betas %>% 
+  filter(
+    version == "v4",
+    model == "gboost"
+  )
+
+# Plotting
+toPlot <- rbind.data.frame(alassoU_v2, alassoU_v3, lasso1se_v3, alassoU_v4, gboost_v4)
+toPlot$type <- "covariates"
+toPlot$type[grep("cluster_", toPlot$variable)] <- "microbiome"
+toPlot$type[grep("p__", toPlot$variable)] <- "microbiome"
+toPlot$model <- paste(toPlot$model, toPlot$version, sep = "_")
+
+head(toPlot)
+
+plot <- 
+  ggplot(
+    toPlot,
+    aes(
+      x = reorder(variable, beta),
+      y = beta,
+      color = type)) +
+  geom_point() +
+  geom_segment(aes(xend = variable, yend = 0)) +
+  coord_flip() + 
+  facet_grid(~model) +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 7),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "bottom"
+  )
+```
+
+```{r echo=FALSE}
+print(plot)
+```
+
