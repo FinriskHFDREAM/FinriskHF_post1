@@ -1,6 +1,11 @@
 ---
-title: "Summary"
-output: html_document
+title: "Summary SB2 models"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    smooth_scroll: false
 ---
 
 ```{r setup, include=FALSE}
@@ -51,7 +56,6 @@ best <-
   ) %>% 
   mutate(
     calibrated = ifelse(hoslem_test > 0.05, "Calibrated", "Non-calibrated"),
-    model = paste0(model, ref, sep = "_"),
     hoslem_test = round(hoslem_test, 3),
     harrell_c = round(harrell_c, 3)
   )
@@ -259,3 +263,34 @@ plot <-
 print(plot)
 ```
 
+#### Most interested clusters
+
+```{r echo=FALSE}
+coab_v2 <- readRDS("ref_v2/coabundances.rds")
+
+cluster_6 <- coab_v2[which(coab_v2$clusters == 6), ]$Species
+cluster_25 <- coab_v2[which(coab_v2$clusters == 25), ]$Species
+cluster_1 <- coab_v2[which(coab_v2$clusters == 1), ]$Species
+c <- list(
+  cluster_6 = cluster_6,
+  cluster_25 = cluster_25,
+  cluster_1 = cluster_1)
+
+print(c)
+```
+
+![Co-abundances network](network-plot/network_all.png)
+
+
+
+![Selected clusters in alassoU ref_v2](network-plot/network_selected.png)
+
+
+![Cluster 6](network-plot/Gcluster6.png)
+
+
+![Cluster 25](network-plot/Gcluster25.png)
+
+
+
+![Cluster 1](network-plot/Gcluster1.png)
