@@ -180,6 +180,11 @@ output <- data.frame(harrell_c = numeric(), Hosmer_lemeshow = numeric())
 # Calculate addition and subtraction for each column
 for (col in colnames(data_merge)[-c(1,10)]) {
   print(col)
+  f (length(unique(as.numeric(data_merge[,col])))==1){
+  data_merge[,col]=as.numeric(data_merge[,col])
+} else {
+  data_merge[,col] = range01(as.numeric(data_merge[,col]))
+}
   evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,col]))
   harrell_c <-evaluation$C
   Hosmer_lemeshow<-evaluation$hoslem_p$pval
@@ -188,5 +193,3 @@ for (col in colnames(data_merge)[-c(1,10)]) {
 }
 
 write.csv(paste0(outdir,"/results/pair_average_eval.csv"))
-#/homes/perawija/data_pande/DREAM/FINRISK2022/submission/final_clean
-#/homes/perawija/data_pande/DREAM/FINRISK2022/post_challenge/FinriskHF_post1
