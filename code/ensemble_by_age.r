@@ -63,6 +63,7 @@ data_age <-
 # Join datasets and calculate mean
 res <- 
   left_join(data, data_age[, c("Age_str", "holmes_denver", "holmes_sb2", "c_denver", "c_sb2")], by = "Age_str") %>% 
-  select(-surv)
+  select(-surv) %>%
+  select(-Age)
 
-saveRDS(res, file = "")
+saveRDS(res, file = paste0(PARAM$folder.data, "results/age_weighed_scores.rds"))
