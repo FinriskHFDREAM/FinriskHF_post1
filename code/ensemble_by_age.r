@@ -66,4 +66,32 @@ res <-
   select(-surv) %>%
   select(-Age)
 
-saveRDS(res, file = paste0(PARAM$folder.data, "results/age_weighed_scores.rds"))
+# Defining weigths
+weigths <- 
+  res %>%
+  group_by(Age_str) %>% 
+  slice(1) %>% 
+  select(c(Age_str, holmes_denver, holmes_sb2, c_denver, c_sb2)) %>% 
+  mutate(
+    # holmes
+    holmes_sb2_cat = ifelse(holmes_sb2 > 0.05, "calibrated", "non-calibrated"),
+    holmes_denver_cat = ifelse(holmes_denver > 0.05, "calibrated", "non-calibrated"),
+    
+    # c-index
+    better_c = ifelse(c_denver - c_sb2 < 0, "sb2", "denver"),
+    
+    # weigths
+    w = -log10(holmes_sb2) - (-log10(holmes_denver)),
+    w_sb2 = ifelse(w < 0, (c_sb2 * 10) + abs(w), c_sb2 * 10),
+    w_denver = ifelse(w > 0, (c_denver * 10) + abs(w), c_denver * 10),
+  )
+
+# based on c-index
+ensemble <- 
+  left_join(res, weigths[, c("Age_str", "w_sb2", "w_denver")], by = "Age_str") %>% 
+  mutate(
+    mean = (Score_sb2 + Score_denver) / 2,
+    w_mean = (w_sb2 * Score_sb2 + w_denver * Score_denver) / (w_sb2 + w_denver)
+  )
+
+saveRDS(ensemble, file = paste0(PARAM$folder.data, "results/age_weighed_scores.rds"))
