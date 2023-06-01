@@ -48,15 +48,15 @@ data_age_sex <-
   data %>% 
   group_by(Age_Sex) %>% 
   summarise(
-    holmes_denver = teststats(surv, Score_denver)$hoslem_p$pval,
-    holmes_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
+    hoslem_denver = teststats(surv, Score_denver)$hoslem_p$pval,
+    hoslem_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
     c_denver = teststats(surv, Score_denver)$C,
     c_sb2 = teststats(surv, Score_sb2)$C
   )
 
 # Join datasets and calculate mean
 res <- 
-  left_join(data, data_age_sex[, c("Age_Sex", "holmes_denver", "holmes_sb2", "c_denver", "c_sb2")], by = "Age_Sex") %>% 
+  left_join(data, data_age_sex[, c("Age_Sex", "hoslem_denver", "hoslem_sb2", "c_denver", "c_sb2")], by = "Age_Sex") %>% 
   select(-surv)
 
 # # Defining weights 
@@ -64,17 +64,17 @@ weigths <-
   res %>%
   group_by(Age_Sex) %>% 
   slice(1) %>% 
-  select(c(Age_Sex, holmes_denver, holmes_sb2, c_denver, c_sb2)) %>% 
+  select(c(Age_Sex, hoslem_denver, hoslem_sb2, c_denver, c_sb2)) %>% 
   mutate(
     # holmes
-    holmes_sb2_cat = ifelse(holmes_sb2 > 0.05, "calibrated", "non-calibrated"),
-    holmes_denver_cat = ifelse(holmes_denver > 0.05, "calibrated", "non-calibrated"),
+    hoslem_sb2_cat = ifelse(hoslem_sb2 > 0.05, "calibrated", "non-calibrated"),
+    hoslem_denver_cat = ifelse(hoslem_denver > 0.05, "calibrated", "non-calibrated"),
     
     # c-index
     better_c = ifelse(c_denver - c_sb2 < 0, "sb2", "denver"),
     
     # weigths
-    w = -log10(holmes_sb2) - (-log10(holmes_denver)),
+    w = -log10(hoslem_sb2) - (-log10(hoslem_denver)),
     w_sb2 = ifelse(w < 0, (c_sb2 * 10) + abs(w), c_sb2 * 10),
     w_denver = ifelse(w > 0, (c_denver * 10) + abs(w), c_denver * 10),
   )
@@ -115,7 +115,7 @@ data <-
     Age_str = as.character(cut(Age, breaks = intervals)),
     Age_Sex = paste(Age_str, Sex, sep = "_")
   ) %>% 
-  select(c(surv, Age_Sex, Score_sb2, Score_denver))
+  select(c(SampleID,surv, Age_Sex, Score_sb2, Score_denver))
 
 # Join datasets and calculate mean
 res <- 
@@ -150,7 +150,8 @@ if (length(unique(ensemble$w_mean))==1){
 }
 
 #merge true score and predicted score so the order is compatible
-
+head(ensemble)
+head(df.surv)
 data_merge <- merge(ensemble, df.surv, by = c("SampleID"))
 evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,"w_mean"]))
 harrell_c <-evaluation$C
