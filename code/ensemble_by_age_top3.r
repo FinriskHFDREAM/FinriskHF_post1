@@ -175,15 +175,24 @@ df.test <- elim(S.test)
 surv.object=Surv(df.test$Event_time,df.test$Event)
 df.surv <- data.frame(SampleID=rownames(df.test),True.Score=surv.object) #need to create with Sample ID, to make sure that the order of submitted score is align with true score
 range01 <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
-if (length(unique(ensemble$w_mean))==1){
-  ensemble$w_mean=ensemble$w_mean
-} else {
-  ensemble$w_mean = range01(ensemble$w_mean)
-}
+
 
 #merge true score and predicted score so the order is compatible
 
 data_merge <- merge(ensemble, df.surv, by = c("SampleID"))
+write.csv(data_merge, file = paste0(PARAM$folder.data, "results/age_weighed_scores_top3Test.csv"))
+
+if (length(unique(data_merge$w_mean))==1){
+  data_merge$w_mean=data_merge$w_mean
+} else {
+  data_merge$w_mean = range01(data_merge$w_mean)
+}
+
+if (length(unique(data_merge$mean))==1){
+  data_merge$mean=data_merge$mean
+} else {
+  data_merge$mean = range01(data_merge$mean)
+}
 evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,"w_mean"]))
 harrell_c <-evaluation$C
 Hosmer_lemeshow<-evaluation$hoslem_p$pval
