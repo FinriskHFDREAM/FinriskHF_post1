@@ -39,7 +39,15 @@ data <-
     Age_str = as.character(cut(Age, breaks = intervals)),
     Age_Sex = paste(Age_str, Sex, sep = "_")
   ) %>% 
-  select(c(surv, Age_Sex, Score_sb2, Score_denver))
+  select(c(surv, Age_Sex, Score_sb2, Score_denver,Event))
+
+#check distribution
+#with event
+#event1 <- data[data$Event==1,]
+#without event
+#event0 <- data[data$Event==0,] 
+#table(event1$Age_Sex)
+#table(event0$Age_Sex)
 
 # Make stratified predictions
 # =====
@@ -115,7 +123,16 @@ data <-
     Age_str = as.character(cut(Age, breaks = intervals)),
     Age_Sex = paste(Age_str, Sex, sep = "_")
   ) %>% 
-  select(c(SampleID,surv, Age_Sex, Score_sb2, Score_denver))
+  select(c(SampleID,surv, Age_Sex, Score_sb2, Score_denver,Event))
+
+
+#check distribution
+#with event
+event1 <- data[data$Event==1,]
+#without event
+event0 <- data[data$Event==0,]
+table(event1$Age_Sex)
+table(event0$Age_Sex)
 
 # Join datasets and calculate mean
 res <- 
