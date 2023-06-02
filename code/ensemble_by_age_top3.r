@@ -16,7 +16,7 @@ PARAM$folder.data <- paste0(PARAM$folder.R, "/")
 test_path <- paste0(PARAM$folder.data, "input_real/train/pheno_training.csv")        # add path to test data
 sb2_path <- paste0(PARAM$folder.data, "TEAMS/SB2/output_ori/scores_train.csv")        # add path to sb2 scores
 denver_path <- paste0(PARAM$folder.data, "TEAMS/DenverFINRISKHacky/output_ori/scores_train.csv")      # add path to denver scores
-yuang_path <- paste0(PARAM$folder.data, "")      # add path to yuang scores
+yuang_path <- paste0(PARAM$folder.data, "TEAMS/Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission/scores_train.csv")      # add path to yuang scores
 
 
 source(paste0(PARAM$folder.data, "code/teststats.r"))  # add complete path to this script
@@ -45,7 +45,7 @@ data <-
     surv = Surv(time = Event_time, event = Event),
     Age_str = cut(Age, breaks = intervals),
   ) %>% 
-  select(c(surv, Age, Age_str, Score_sb2, Score_denver, Score_yuang))
+  select(c(SampleID,surv, Age, Age_str, Score_sb2, Score_denver, Score_yuang))
 
 # Make stratified predictions
 # =====
@@ -120,7 +120,7 @@ saveRDS(ensemble, file = paste0(PARAM$folder.data, "results/age_weighed_scores_t
 test_path <- paste0(PARAM$folder.data, "input_real/scoring_nohide/pheno_scoring_nohide.csv")        # add path to test data
 sb2_path <- paste0(PARAM$folder.data, "TEAMS/SB2/output_ori/scores.csv")        # add path to sb2 scores
 denver_path <- paste0(PARAM$folder.data, "TEAMS/DenverFINRISKHacky/output_ori/scores.csv") 
-yuang_path <- paste0(PARAM$folder.data, "") 
+yuang_path <- paste0(PARAM$folder.data, "TEAMS/Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission/scores.csv") 
 
 test <- read.csv(test_path, header = TRUE, row.names = 1)
 test$SampleID <- rownames(test)
@@ -146,7 +146,7 @@ data <-
     surv = Surv(time = Event_time, event = Event),
     Age_str = cut(Age, breaks = intervals),
   ) %>% 
-  select(c(surv, Age, Age_str, Score_sb2, Score_denver, Score_yuang))
+  select(c(SampleID,surv, Age, Age_str, Score_sb2, Score_denver, Score_yuang))
 
 # Join datasets and calculate mean
 res <- 
@@ -197,4 +197,4 @@ df.eval_mean <- data.frame("harrell_c"=evaluation$C,"Hosmer_lemeshow"=evaluation
 
 output <- rbind(df.eval_weighed,df.eval_mean)
 head(output)
-write.csv(output, paste0(PARAM$folder.data,"/results/pair_weighedAgeStr_eval.csv"))
+write.csv(output, paste0(PARAM$folder.data,"/results/pair_weighedAgeStr_top3_eval.csv"))
