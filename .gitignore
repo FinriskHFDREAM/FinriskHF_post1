@@ -35,5 +35,3 @@ TEAMS/SB2/ref_v4/scores_gboost.csv
 TEAMS/SB2/ref_v4/scores_lasso-1se.csv
 TEAMS/SB2/ref_v4/scores_lasso-BIC.csv
 results/pcoa_vegdist/betadis.rds
-results/pcoa_vegdist/nmds.rds
-results/pcoa_vegdist/pcoa_rar.rds
