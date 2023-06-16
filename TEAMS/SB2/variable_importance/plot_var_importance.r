@@ -2,7 +2,7 @@ require(ggplot2)
 
 setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 
-refs <- c("ref_v1", "ref_v2", "ref_v3", "ref_v4")
+refs <- c("final")
 
 lapply(refs, function(ref) {
   
