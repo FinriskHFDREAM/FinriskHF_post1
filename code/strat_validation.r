@@ -122,6 +122,8 @@ toPlot <- rbind.data.frame(
 
 print(head(toPlot))
 
+write.csv(toPlot,paste0(PARAM$folder.data,"results/prelim_test/plot_stratify.csv"))
+
 toPlot <- data.table::melt(toPlot)
 names(toPlot) <- c("groups", "variable", "score", "value")
 toPlot$score <- as.character(toPlot$score)
