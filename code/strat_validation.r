@@ -23,19 +23,19 @@ test <- read.csv(test_path, header = TRUE, row.names = 1)
 test$SampleID <- rownames(test)
 
 # SB2 scores
-sb2 <- read.csv(sb2_path, header = TRUE)
+SB2 <- read.csv(sb2_path, header = TRUE)
 
 # DENVER scores
-denver <- read.csv(denver_path, header = TRUE)
-
+DFH <- read.csv(denver_path, header = TRUE)
+intervals <- c(0, 34, 44, 54, 64, 75)
 # Join datasets and stratify by clinical covariates
 data <- 
   test %>% 
-  inner_join(., sb2, by = "SampleID") %>% 
-  inner_join(., denver, by = "SampleID", suffix = c("_sb2", "_denver")) %>% 
+  inner_join(., SB2, by = "SampleID") %>% 
+  inner_join(., DFH, by = "SampleID", suffix = c("_SB2", "_DFH")) %>% 
   mutate(
     surv = Surv(time = Event_time, event = Event),
-    Age_str = cut2(Age, m = 300),
+    Age_str = cut(Age, breaks = intervals),
     BMI_str = cut2(BodyMassIndex, m = 300),
     SystolicBP_str = cut2(SystolicBP, m = 300),
     NonHDLcholesterol_str = ifelse(NonHDLcholesterol > 4, "high", "normal")
@@ -48,10 +48,10 @@ data_age <-
   data %>% 
   group_by(Age_str) %>% 
   summarise(
-    holmes_denver = teststats(surv, Score_denver)$hoslem_p$pval,
-    holmes_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
-    c_denver = teststats(surv, Score_denver)$C,
-    c_sb2 = teststats(surv, Score_sb2)$C
+    holmes_DFH = teststats(surv, Score_DFH)$hoslem_p$pval,
+    holmes_SB2 = teststats(surv, Score_SB2)$hoslem_p$pval,
+    c_DFH = teststats(surv, Score_DFH)$C,
+    c_SB2 = teststats(surv, Score_SB2)$C
   ) %>% 
   rename(groups = Age_str) %>% 
   mutate(
@@ -63,10 +63,10 @@ data_bmi <-
   data %>% 
   group_by(BMI_str) %>% 
   summarise(
-    holmes_denver = teststats(surv, Score_denver)$hoslem_p$pval,
-    holmes_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
-    c_denver = teststats(surv, Score_denver)$C,
-    c_sb2 = teststats(surv, Score_sb2)$C
+    holmes_DFH = teststats(surv, Score_DFH)$hoslem_p$pval,
+    holmes_SB2 = teststats(surv, Score_SB2)$hoslem_p$pval,
+    c_DFH = teststats(surv, Score_DFH)$C,
+    c_SB2 = teststats(surv, Score_SB2)$C
   ) %>% 
   rename(groups = BMI_str) %>% 
   mutate(
@@ -81,10 +81,10 @@ data_smoking <-
     !is.na(Smoking)
   ) %>% 
   summarise(
-    holmes_denver = teststats(surv, Score_denver)$hoslem_p$pval,
-    holmes_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
-    c_denver = teststats(surv, Score_denver)$C,
-    c_sb2 = teststats(surv, Score_sb2)$C
+    holmes_DFH = teststats(surv, Score_DFH)$hoslem_p$pval,
+    holmes_SB2 = teststats(surv, Score_SB2)$hoslem_p$pval,
+    c_DFH = teststats(surv, Score_DFH)$C,
+    c_SB2 = teststats(surv, Score_SB2)$C
   ) %>% 
   rename(groups = Smoking) %>% 
   mutate(
@@ -100,10 +100,10 @@ data_bptreatment <-
     !is.na(BPTreatment)
   ) %>% 
   summarise(
-    holmes_denver = teststats(surv, Score_denver)$hoslem_p$pval,
-    holmes_sb2 = teststats(surv, Score_sb2)$hoslem_p$pval,
-    c_denver = teststats(surv, Score_denver)$C,
-    c_sb2 = teststats(surv, Score_sb2)$C
+    holmes_DFH = teststats(surv, Score_DFH)$hoslem_p$pval,
+    holmes_SB2 = teststats(surv, Score_SB2)$hoslem_p$pval,
+    c_DFH = teststats(surv, Score_DFH)$C,
+    c_SB2 = teststats(surv, Score_SB2)$C
   ) %>% 
   rename(groups = BPTreatment) %>% 
   mutate(
@@ -138,7 +138,7 @@ ggscatter(
 ) +
   facet_wrap(~variable , scales = "free") +
   ylab(label = "C-Index")+theme(axis.text.x = element_text(size = 8))  
-ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare.pdf")),width = 14,height = 7, device="pdf")
+ggsave( file=(paste0(PARAM$folder.data,"results/prelim_test/Harrel_C_compare_stratify.pdf")),width = 14,height = 7, device="pdf")
 
 toPlot_h <- toPlot[which(toPlot$metric == "holmes"), ]
 ggscatter(
@@ -149,4 +149,4 @@ ggscatter(
 ) +
   facet_wrap(~variable , scales = "free") +
   ylab(label = "Hoslem test")+theme(axis.text.x = element_text(size = 8))   
-ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare.pdf")),width = 14,height = 7, device="pdf")
+ggsave(file=(paste0(PARAM$folder.data,"results/prelim_test/Hoslem_compare_stratify.pdf")),width = 14,height = 7, device="pdf")
