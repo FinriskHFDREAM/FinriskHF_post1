@@ -14,7 +14,7 @@ The repository contains informations related to The Heart Failure Prediction: Mi
 
 * code: directory for general usage code and reproducing figures for manuscript
 
-*challenge_infrastructure: submissions retrieval, evaluations code, baseline model
+* challenge_infrastructure: submissions retrieval, evaluations code, baseline model
 
 * Results: placement for figures, tables and general outputs for papers, the output of testing refine model will be placed in TEAMS/(name_of_team)/(model_version)
 
