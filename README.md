@@ -22,12 +22,12 @@ The structure of the input directory will be as described as below. The pheno_sc
 │   ├── pheno_scoring_nohide.csv
 │   └── taxtable.csv
 └── train
-│  ├── pheno_train.csv
+│   ├── pheno_train.csv
 │   ├── readcounts_train.csv
 │   └── taxtable.csv
 └── test
-    ├── pheno_test.csv
-    ├── readcounts_test.csv
-    └── taxtable.csv
+│   ├── pheno_test.csv
+│   ├── readcounts_test.csv
+│   └── taxtable.csv
 ```
 
