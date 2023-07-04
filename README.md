@@ -1,18 +1,20 @@
 # The Heart Failure Prediction: Microbiome-FINRISK DREAM Challenge
 
 The repository contains informations related to The Heart Failure Prediction: Microbiome-FINRISK DREAM Challenge, including:
-1. The submissions retrieval from synapse throughout the challenge
-2. The code for evaluations
-3. Post challenge record on model ensembles and refinement
-4. Post challenge supporting analysis
+* The submissions retrieval from synapse throughout the challenge
+* The code for evaluations
+* Post-challenge record on model ensembles and refinement
+* Post-challenge supporting analysis
 
-## Directory information
+## A. Overview directory information
 
 * input_syn : placement of sythetic dataset, only training and test set will be shared. Inside the directory, you can find different versions of synthetic data (if updated, for example with additional metadata).
 
 * TEAMS: the directory to coordinate  code for testing in real dataset during model refinement process with 2 top performing teams
 
 * code: directory for general usage code and reproducing figures for manuscript
+
+*challenge_infrastructure: submissions retrieval, evaluations code, baseline model
 
 * Results: placement for figures, tables and general outputs for papers, the output of testing refine model will be placed in TEAMS/(name_of_team)/(model_version)
 
@@ -39,3 +41,4 @@ The structure of the input directory will be as described as below. The pheno_sc
 │   └── taxtable.csv
 ```
 
+## B. The submissions retrieval from synapse throughout the challenge period
