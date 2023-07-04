@@ -12,8 +12,8 @@
 
 * input_real: the real dataset (will not be shared in git)
 
-IMPORTANT: in the code please allow arguments that will point into the input directory (real or synthetic)
-The structure of input directory will be as described as below. The pheno_scoring_nohide.csv is for evaluate the individual risk score from true value (event and event time informations available).
+IMPORTANT: in the code please allow arguments that will point to the input directory (real or synthetic)
+The structure of the input directory will be as described as below. The pheno_scoring_nohide.csv is for evaluating the individual risk score from the true value (event and event time information available).
 
 ```
 ├── scoring
@@ -22,12 +22,12 @@ The structure of input directory will be as described as below. The pheno_scorin
 │   ├── pheno_scoring_nohide.csv
 │   └── taxtable.csv
 └── train
-│  	├── pheno_train.csv
+│  ├── pheno_train.csv
 │   ├── readcounts_train.csv
 │   └── taxtable.csv
 └── test
-	├── pheno_test.csv
+    ├── pheno_test.csv
     ├── readcounts_test.csv
-	└── taxtable.csv
+    └── taxtable.csv
 ```
 
