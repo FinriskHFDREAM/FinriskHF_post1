@@ -25,7 +25,13 @@ df_ref <- merge(ranked_teams, leaderboard, by = "id", all.x = TRUE)  %>% arrange
 
 #merge bootstrap score from all teams
 
-list_score <- list.files(PARAM$folder.R, pattern = "scores.csv", recursive = T, full.names = T) 
+list_score1 <- list.files(PARAM$folder.R, pattern = "scores.csv", recursive = T, full.names = T)
+#remove the Baseline from the list score!
+target_string <- "Baseline"
+indices <- grep(target_string, list_score1)
+# Remove elements with the target string
+list_score <- list_score1[-indices]
+print(list_score)
 list_team <- list_score %>%
     strsplit( "/" ) %>%
     sapply( "[", 9 )
@@ -34,14 +40,14 @@ Scores_df1 <- lapply(score_df, "[", c("Score")) %>% bind_cols()
 colnames(Scores_df1) <- c(list_team)
 #read 1 scores file as csv to asign sampleID
 scoreEX <- read.csv(file = paste0(PARAM$folder.data,
-                                  "SB2_Final_Submission/scores.csv"))
+                                  "SB2_Final_Submission/output/scores.csv"))
 rownames(Scores_df1) <-scoreEX$SampleID
 
 #order columns based on list
 col_order <- df_ref$folder_name
 #print(col_order)
 Scores_df <- Scores_df1#[, col_order]
-#write.csv(Scores_df,paste0(outdir,"/results/join_all.score.csv"))
+write.csv(Scores_df,paste0(outdir,"/results/join_all.score.csv"))
 
 #calculate the average Harrel's C score from combinations 2,3,4,5 combination
 
@@ -64,7 +70,7 @@ col_combinations <- c("SB2_Final_Submission DenverFINRISKHacky_Final",
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6", 
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission", 
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission UTK_Bioinformatics_Final_Submission",
-"SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission UTK_Bioinformatics_Final_Submission Pasolli-team-01"
+"SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission UTK_Bioinformatics_Final_Submission PTeam"
 )
 
 
@@ -173,18 +179,13 @@ df.surv <- data.frame(SampleID=rownames(df.test),True.Score=surv.object) #need t
 #calculate the Harrel'sC and hoslem for all columns
 #merge the true and average score
 data_merge <- merge(means2, df.surv, by = c("SampleID"))
-#write.csv(data_merge,paste0(outdir,"/results/merge_means.csv"))
+write.csv(data_merge,paste0(outdir,"/results/merge_means.csv"))
 #calculate !
 # Create a new dataframe to store the results
 output <- data.frame(harrell_c = numeric(), Hosmer_lemeshow = numeric())
 # Calculate addition and subtraction for each column
 for (col in colnames(data_merge)[-c(1,10)]) {
   print(col)
-  f (length(unique(as.numeric(data_merge[,col])))==1){
-  data_merge[,col]=as.numeric(data_merge[,col])
-} else {
-  data_merge[,col] = range01(as.numeric(data_merge[,col]))
-}
   evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,col]))
   harrell_c <-evaluation$C
   Hosmer_lemeshow<-evaluation$hoslem_p$pval
@@ -192,4 +193,34 @@ for (col in colnames(data_merge)[-c(1,10)]) {
   output <- rbind(output,df.eval)
 }
 
-write.csv(paste0(outdir,"/results/pair_average_eval.csv"))
+#SB2 and Denver
+scoreSB2 <- read.csv(file = paste0(PARAM$folder.data,
+                                  "SB2_Final_Submission/output/scores.csv"))
+if (length(unique(scoreSB2$Score))==1){
+  scoreSB2$Score=scoreSB2$Score
+} else {
+  scoreSB2$Score = range01(scoreSB2$Score)
+}
+
+data_merge <- merge(scoreSB2, df.surv, by = c("SampleID"))
+evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,"Score"]))
+harrell_c <-evaluation$C
+Hosmer_lemeshow<-evaluation$hoslem_p$pval
+df.eval <- data.frame("harrell_c"=evaluation$C,"Hosmer_lemeshow"=evaluation$hoslem_p$pval, row.names = "SB2_Final_Submission")
+output <- rbind(output,df.eval)
+scoreDenver <- read.csv(file = paste0(PARAM$folder.data,
+                                  "DenverFINRISKHacky_Final/output/scores.csv"))
+if (length(unique(scoreDenver$Score))==1){
+  scoreDenver$Score=scoreDenver$Score
+} else {
+  scoreDenver$Score = range01(scoreDenver$Score)
+}
+
+data_merge <- merge(scoreDenver, df.surv, by = c("SampleID"))
+evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,"Score"]))
+harrell_c <-evaluation$C
+Hosmer_lemeshow<-evaluation$hoslem_p$pval
+df.eval <- data.frame("harrell_c"=evaluation$C,"Hosmer_lemeshow"=evaluation$hoslem_p$pval, row.names = "DenverFINRISKHacky_Final")
+output <- rbind(output,df.eval)
+
+write.csv(output,paste0(outdir,"/results/pair_average_eval.csv"))
