@@ -64,10 +64,10 @@ write.csv(Scores_df,paste0(outdir,"/results/join_all.score.csv"))
 
 #calculate average score for combinations of interest
 col_combinations <- c("SB2_Final_Submission DenverFINRISKHacky_Final",
+"SB2_Final_Submission DenverFINRISKHacky_Final TristanF_Final_Submission",
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission",
 "SB2_Final_Submission DenverFINRISKHacky_Final Metformin_121_6",
-"SB2_Final_Submission DenverFINRISKHacky_Final TristanF_Final_Submission",
-"SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6", 
+"SB2_Final_Submission DenverFINRISKHacky_Final TristanF_Final_Submission Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission", 
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission", 
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission UTK_Bioinformatics_Final_Submission",
 "SB2_Final_Submission DenverFINRISKHacky_Final Yuanfang_Guan_and_Hanrui_Zhang_Final_Submission Metformin_121_6 TristanF_Final_Submission UTK_Bioinformatics_Final_Submission PTeam"
@@ -75,16 +75,25 @@ col_combinations <- c("SB2_Final_Submission DenverFINRISKHacky_Final",
 
 
 # Calculate the means for each row from different combinations of columns
+range01 <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
+
 means <- sapply(col_combinations, function(cols) {
   selected_cols <- unlist(strsplit(cols, " "))
+  #print(selected_cols)
   rowMeans(Scores_df[, selected_cols])
 })
+
+for (col in colnames(means)) {
+  print(col)
+  if (length(unique(as.numeric(means[,col])))==1){
+  means[,col]=as.numeric(means[,col])
+} else {
+  means[,col] = range01(as.numeric(means[,col]))
+}
+}
 SampleID <- scoreEX$SampleID
 means2<- cbind(means,SampleID)
 
-
-
-range01 <- function(x){(x-min(x, na.rm = TRUE))/(max(x, na.rm = TRUE)-min(x, na.rm = TRUE))}
 
 #functions
 #remove unwanted variables
@@ -221,6 +230,7 @@ evaluation <- teststats(data_merge$True.Score,as.numeric(data_merge[,"Score"]))
 harrell_c <-evaluation$C
 Hosmer_lemeshow<-evaluation$hoslem_p$pval
 df.eval <- data.frame("harrell_c"=evaluation$C,"Hosmer_lemeshow"=evaluation$hoslem_p$pval, row.names = "DenverFINRISKHacky_Final")
-output <- rbind(output,df.eval)
+output <- rbind(output,df.eval) %>%
+      mutate(harrell_c = round(harrell_c,4))
 
 write.csv(output,paste0(outdir,"/results/pair_average_eval.csv"))
