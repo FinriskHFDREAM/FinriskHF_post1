@@ -8,7 +8,7 @@ The repository contains informations related to The Heart Failure Prediction: Mi
 
 ## A. Overview directory information
 
-* input_syn : placement of sythetic dataset, only training and test set will be shared. Inside the directory, you can find different versions of synthetic data (if updated, for example with additional metadata).
+* input_syn : placement of sythetic dataset (will not be shared in git).
 
 * TEAMS: the directory to coordinate  code for testing in real dataset during model refinement process with 2 top performing teams
 
@@ -42,3 +42,10 @@ The structure of the input directory will be as described as below. The pheno_sc
 ```
 
 ## B. The submissions retrieval from synapse throughout the challenge period
+
+Notes on retriving, evaluating, and status updating of the challenge submission is available in the `challenge_infrastructure`directory with detail instructions in `submission_retrival.md`.
+All singularity submission from participants is available in synapse platform and listed in the Supplementary Table 3 of the manuscript.
+
+
+
+
