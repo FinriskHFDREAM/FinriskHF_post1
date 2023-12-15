@@ -20,7 +20,7 @@ The repository contains informations related to The Heart Failure Prediction: Mi
 
 * input_real: the real dataset (will not be shared in git)
 
-Due to size limitations, singularity image for reproducible analysis can be accessed through the synapse platform (step is given [here](https://help.synapse.org/docs/Downloading-Data-Programmatically.2003796248.html))
+The challenge participants model were available as the singularity image. Due to size limitations, the link of singularity image for reproducible analysis is provided in Supplementary Table 3 and can be accessed through the synapse platform (step is given [here](https://help.synapse.org/docs/Downloading-Data-Programmatically.2003796248.html).
 
 IMPORTANT: in the code please allow arguments that will point to the input directory (real or synthetic)
 The structure of the input directory will be as described as below. The pheno_scoring_nohide.csv is for evaluating the individual risk score from the true value (event and event time information available).
