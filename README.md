@@ -42,12 +42,14 @@ The structure of the input directory will be as described as below. The pheno_sc
 │   └── taxtable.csv
 ```
 
-## B. The submissions retrieval from synapse throughout the challenge period
+## B. The submissions retrieval, evaluation, and status update from synapse throughout the challenge period
 
 Notes on retriving, evaluating, and status updating of the challenge submission is available in the `challenge_infrastructure` directory with detail instructions in `submission_retrival.md`.
 All singularity submission from participants is available in synapse platform and listed in the Supplementary Table 3 of the manuscript.
 
-## C. Submitted model evaluation
+## C. Post challenge analysis
+
+## D. Reproducing the Figures in mansucript
 
 
 
