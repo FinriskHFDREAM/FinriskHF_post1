@@ -20,7 +20,7 @@ The repository contains informations related to The Heart Failure Prediction: Mi
 
 * input_real: the real dataset (the dataset are available through the THL biobank upon submission of a research plan and signing a daata transfer agreement, https://thl.fi/en/web/thl-biobank/for-researchers/ )
 
-The challenge participants model were available as the singularity image. Due to size limitations, the link of singularity image for reproducible analysis is provided in Supplementary Table 3 and can be accessed through the synapse platform (step is given [here](https://help.synapse.org/docs/Downloading-Data-Programmatically.2003796248.html).
+The challenge participants model were available as the singularity image. Due to size limitations, the link of singularity image for reproducible analysis is provided in Supplementary Table 3 and can be accessed through the synapse platform (step is given [here](https://help.synapse.org/docs/Downloading-Data-Programmatically.2003796248.html). We are aware that **Singularity** is now known as **Apptainer**. The use of singularity and apptainer is interchengable and therefore, here we refered it as **Singularity**.
 
 IMPORTANT: in the code please allow arguments that will point to the input directory (real or synthetic)
 The structure of the input directory will be as described as below. The pheno_scoring_nohide.csv and  pheno_test_nohide.csv are for evaluating the individual risk score from the true value (event and event time information available).
@@ -48,6 +48,21 @@ Notes on retriving, evaluating, and status updating of the challenge submission 
 All singularity submission from participants is available in synapse platform and listed in the Supplementary Table 3 of the manuscript.
 
 ## C. Post challenge analysis
+
+Due to participants’ limited access to the real dataset, we also worked with the top two performing teams to further improve the model performance and calibrations for the final submitted models after the challenge formally concluded. Top 2 performing models has submitted different version of model refinement and was evaluated in scoring dataset. All models were available in `TEAMS` directory. Among them we primarly reported are 2 modifications of SB2 final model and the ensemble model among all received model and 
+
+### 1. SB2 model
+
+The SB2 final model R code already containerized in the submitted singularity image listed in Supplementary Table 3.
+Command to run the submission during the final phase when evaluations were carried out on scoring dataset is as follow:
+
+```
+singularity run SB2_final.sif input_real scoring
+```
+During the post-challenge phase, 2 more modifications were tested, which are:
+1. **SB2 refined model**
+2. **SB2**
+
 
 ## D. Reproducing the Figures in mansucript
 
