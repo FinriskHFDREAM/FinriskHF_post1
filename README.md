@@ -47,6 +47,11 @@ The structure of the input directory will be as described as below. The pheno_sc
 Notes on retriving, evaluating, and status updating of the challenge submission is available in the `challenge_infrastructure` directory with detail instructions in `submission_retrival.md`.
 All singularity submission from participants is available in synapse platform and listed in the Supplementary Table 3 of the manuscript.
 
+To ensure a robust ranking of participants, we additionally performed 1000 bootstrap iterations of random sampling on the individual’s risk scores calculated by each model. The evaluation metrics, Harrell’s C-index and Hosmer-Lemeshow p-value, were then re-calculated to generate a distribution of evaluation scores for each submission. We used these metrics to calculate the Bayes factor, using the computeBayesFactor functions from the challenge scoring R package (https://github.com/Sage-Bionetworks/challengescoring/blob/develop/R/bootstrap.R) and comparing them to the top-performing model as well as to the baseline models (Supp. Table 8). 
+
+(add code for bootstrap and bayes factor)
+
+
 ## C. Post challenge analysis
 
 Due to participants’ limited access to the real dataset, we also worked with the top two performing teams to further improve the model performance and calibrations for the final submitted models after the challenge formally concluded. Top 2 performing models has submitted different version of model refinement and was evaluated in scoring dataset. All models were available in `TEAMS` directory. Among them we primarly reported are 2 modifications of SB2 final model and the ensemble model among all received model. 
