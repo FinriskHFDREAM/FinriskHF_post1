@@ -60,8 +60,10 @@ Command to run the submission during the final phase when evaluations were carri
 singularity run SB2_final.sif input_real scoring
 ```
 During the post-challenge phase, 2 more modifications were tested, which are:
-a. **SB2 refined model** where the phylum informations were removed from the features for LASSO feature selection due to it representing redundant information with species information. The model can be found in: ``
-b. **SB2 age fixed** 
+
+a. **SB2 refined model** where the phylum informations were removed from the features for LASSO feature selection due to it representing redundant information with species information. The model can be found in: `TEAMS/SB2/code_v2/main_lasso.r`
+
+b. **SB2 age fixed** almost similar to SB2 refined model above, however in this model, only Age is selected as unpenalized features. The model can be found in: `TEAMS/SB2/code_v2/main_Agefix.r`
 
 
 ## D. Reproducing the Figures in mansucript
