@@ -65,6 +65,12 @@ a. **SB2 refined model** where the phylum informations were removed from the fea
 
 b. **SB2 age fixed** almost similar to SB2 refined model above, however in this model, only Age is selected as unpenalized features. The model can be found in: `TEAMS/SB2/code_v2/main_Agefix.r`
 
+Similar singularity image that has been submitted during the challenge can be used to execute the refine model as follow:
+
+```
+singularity exec SB2_final.sif Rscript <each script listed above> ./ input_real scoring
+```
+
 
 ## D. Reproducing the Figures in mansucript
 
