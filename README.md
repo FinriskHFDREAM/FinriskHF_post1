@@ -49,7 +49,9 @@ All singularity submission from participants is available in synapse platform an
 
 ## C. Post challenge analysis
 
-### 1. Model refinement of SB2 teams
+Due to participants’ limited access to the real dataset, we also worked with the top two performing teams to further improve the model performance and calibrations for the final submitted models after the challenge formally concluded. Top 2 performing models has submitted different version of model refinement and was evaluated in scoring dataset. All models were available in `TEAMS` directory. Among them we primarly reported are 2 modifications of SB2 final model and the ensemble model among all received model and 
+
+### 1. SB2 model
 
 The SB2 final model R code already containerized in the submitted singularity image listed in Supplementary Table 3.
 Command to run the submission during the final phase when evaluations were carried out on scoring dataset is as follow:
@@ -57,8 +59,9 @@ Command to run the submission during the final phase when evaluations were carri
 ```
 singularity run SB2_final.sif input_real scoring
 ```
-During the post-challenge phase, 2 more modifications werer tested, which are:
+During the post-challenge phase, 2 more modifications were tested, which are:
 1. **SB2 refined model**
+2. **SB2**
 
 
 ## D. Reproducing the Figures in mansucript
