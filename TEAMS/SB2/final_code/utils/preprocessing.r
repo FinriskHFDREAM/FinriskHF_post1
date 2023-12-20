@@ -1,7 +1,7 @@
 # Load data
 print("Importing data ...")
 train <- pseq(inputdir = inputdir, subset = "train")
-test <- pseq(inputdir = inputdir, subset = "scoring")
+test <- pseq(inputdir = inputdir, subset = subset)
 
 print(train)
 print(test)
@@ -75,6 +75,11 @@ train <- filter_taxa(train,
 # Calculate co-abundances
 print("Calculating co-abundances clusters ...")
 coab_taxa <- co_abundances(train)
+saveRDS(
+  coab_taxa,
+  file = file.path(
+    outputdir, "coabundances.rds"
+  ))
 
 # Caculate GSVA
 print("Extract GSVA scores by each cluster ...")
@@ -88,42 +93,76 @@ x_train <- data.frame(pheno_train[, -c(8, 9)],
                       scores$train)
 y_train <- pheno_train[, c("Event_time", "Event")]
 
-pheno_test <- sample_data(test)
-x_test <- data.frame(pheno_test,
-                     richness_test,
-                     test_phylos,
-                     scores$test)
-# y_test <- pheno_test[, c("Event_time", "Event")]
+
+if (subset == "test") {
+  pheno_test <- sample_data(test)
+  x_test <- data.frame(pheno_test[, -c(8, 9)],
+                      richness_test,
+                      test_phylos,
+                      scores$test)
+  y_test <- pheno_test[, c("Event_time", "Event")]
+
+  # Check data
+  # ======
+  stopifnot(ncol(x_train) == ncol(x_test))
+  stopifnot(colnames(x_train) == colnames(x_test))
+  stopifnot(nrow(x_train) == nrow(y_train))
+  stopifnot(nrow(x_test) == nrow(y_test))
+
+  # Creating train and test data
+  print("Creating train and test data ...")
+  train <- cbind.data.frame(x_train, y_train)
+  #test  <- cbind.data.frame(x_test, y_test)
+  test <- as.data.frame(x_test)
+
+  # What do we do with ...
+  # ======
+  # NA's values in train and test?
+  train <- train[complete.cases(train), ]
+  test <- missRanger(test, pmm.k = 10, seed = 153)
+  # Negatives survival values in train and test?
+  train <- train[-which(train$Event_time < 0), ]
+  train$Event_time <- train$Event_time + 0.1
+
+  # Removing PrevalentHFAIL (only 0)
+  train <- train[, -grep("PrevalentHFAIL", colnames(train))]
+  test <- test[, -grep("PrevalentHFAIL", colnames(test))]
+
+} else if (subset == "scoring") {
+
+  pheno_test <- sample_data(test)
+  x_test <- data.frame(pheno_test,
+                      richness_test,
+                      test_phylos,
+                      scores$test)
+
+  # Check data
+  # ======
+  stopifnot(ncol(x_train) == ncol(x_test))
+  stopifnot(colnames(x_train) == colnames(x_test))
+  stopifnot(nrow(x_train) == nrow(y_train))
+
+  # Creating train and test data
+  print("Creating train and test data ...")
+  train <- cbind.data.frame(x_train, y_train)
+  test <- as.data.frame(x_test)
+
+  # What do we do with ...
+  # ======
+  # NA's values in train and test?
+  train <- train[complete.cases(train), ]
+  test <- missRanger(test, pmm.k = 10, seed = 153)
+  # Negatives survival values in train and test?
+  #train <- train[-which(train$Event_time < 0), ]
+  train$Event_time <- train$Event_time + 0.1
+
+  # Removing PrevalentHFAIL (only 0)
+  train <- train[, -grep("PrevalentHFAIL", colnames(train))]
+  test <- test[, -grep("PrevalentHFAIL", colnames(test))]
+
+}
 
 
-# Check data
-# ======
-stopifnot(ncol(x_train) == ncol(x_test))
-stopifnot(colnames(x_train) == colnames(x_test))
-stopifnot(nrow(x_train) == nrow(y_train))
-# stopifnot(nrow(x_test) == nrow(y_test))
-
-
-# Creating train and test data
-print("Creating train and test data ...")
-train <- cbind.data.frame(x_train, y_train)
-#test  <- cbind.data.frame(x_test, y_test)
-test <- as.data.frame(x_test)
-
-
-# What do we do with ...
-# ======
-# NA's values in train and test?
-train <- train[complete.cases(train), ]
-test <- missRanger(test, pmm.k = 10, seed = 153)
-# Negatives survival values in train and test?
-train <- train[-which(train$Event_time < 0), ]
-train$Event_time <- train$Event_time + 0.1
-#test$Event_time[which(test$Event_time < 0)] <- 15
-
-# Removing PrevalentHFAIL (only 0)
-train <- train[, -grep("PrevalentHFAIL", colnames(train))]
-test <- test[, -grep("PrevalentHFAIL", colnames(test))]
 
 
 #save(train, test, file = "~/git/DREAM-FINRISK/tmp/data_new.RData")

@@ -45,5 +45,7 @@ co_abundances <- function(pseq) {
      taxa <- as.data.frame(taxa[nodes, ])
      taxa$clusters <- V(grph)$cluster
 
+     igraph::write_graph(grph, file = file.path(outputdir, "graph.graphml"), format = "graphml")
+
      return(taxa)
 }
