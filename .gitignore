@@ -36,4 +36,11 @@ TEAMS/SB2/ref_v4/scores_lasso-1se.csv
 TEAMS/SB2/ref_v4/scores_lasso-BIC.csv
 results/pcoa_vegdist/betadis.rds
 results/pcoa_spec_prune/*.rds
+results/pcoa_spec_prune/*ER
+results/pcoa_spec_prune/*OU
+results/pcoa_spec_prune/*job
 results/pcoa_spec_prune2/*rds
+results/pcoa_spec_prune2/*.rds
+results/pcoa_spec_prune2/*ER  
+results/pcoa_spec_prune2/*OU 
+results/pcoa_spec_prune2/*job
