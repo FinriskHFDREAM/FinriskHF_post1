@@ -86,6 +86,12 @@ The code to analyze available in [code/AveScore_allteam.R](https://github.com/Fi
 
 ## D. Reproducing the Figures in mansucript
 
+- Figure 1A. Geographical distribution across Finland for the individuals within the national FINRISK 2002 cohort was adapted from https://gitlab.com/openfinrisk2002/article-2021-finrisk02-taxonomic-signatures-mortality-risk/-/blob/master/code/create_figure1_map_and_pcoa/finland.R
+- Figure 1B. Principal Coordinate Analysis (PCoA) using Bray-Curtis dissimilarity metrics between randomly selected subsets of the data (training, testing, scoring sets) : [code/pcoa_viz.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/pcoa_viz.R)
+- Figure 2B were created according to the Supplementary Table 4 and 6 that was extracted from the output of each model.
+- Figure 4. Cumulative incidence of HF over 15 years of follow up, stratified by quintiles of predicted risk score
+- The rest of the figure were created by 
+
 
 
 
