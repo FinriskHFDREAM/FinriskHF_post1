@@ -44,7 +44,7 @@ The structure of the input directory will be as described as below. The pheno_sc
 
 ## B. The submissions retrieval, evaluation, and status update from synapse throughout the challenge period
 
-Notes on retriving, evaluating, and status updating of the challenge submission is available in the **[challenge_infrastructure](https://github.com/FinriskHFDREAM/FinriskHF_post1/tree/main/challenge_infrastructure)** directory with detail instructions in `submission_retrival.md`.
+Notes on retriving, evaluating, and status updating of the challenge submission is available in the **[challenge_infrastructure](https://github.com/FinriskHFDREAM/FinriskHF_post1/tree/main/challenge_infrastructure)** directory with detail instructions in **[submission_retrival.md](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/challenge_infrastructure/submission_retrival.md)**.
 All singularity submission from participants is available in synapse platform and listed in the Supplementary Table 3 of the manuscript.
 
 To ensure a robust ranking of participants, we additionally performed 1000 bootstrap iterations of random sampling on the individual’s risk scores calculated by each model. The evaluation metrics, Harrell’s C-index and Hosmer-Lemeshow p-value, were then re-calculated to generate a distribution of evaluation scores for each submission. We used these metrics to calculate the Bayes factor, using the computeBayesFactor functions from the challenge scoring R package (https://github.com/Sage-Bionetworks/challengescoring/blob/develop/R/bootstrap.R) and comparing them to the top-performing model as well as to the baseline models (Supp. Table 8). 
