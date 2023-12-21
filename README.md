@@ -49,7 +49,8 @@ All singularity submission from participants is available in synapse platform an
 
 To ensure a robust ranking of participants, we additionally performed 1000 bootstrap iterations of random sampling on the individual’s risk scores calculated by each model. The evaluation metrics, Harrell’s C-index and Hosmer-Lemeshow p-value, were then re-calculated to generate a distribution of evaluation scores for each submission. We used these metrics to calculate the Bayes factor, using the computeBayesFactor functions from the challenge scoring R package (https://github.com/Sage-Bionetworks/challengescoring/blob/develop/R/bootstrap.R) and comparing them to the top-performing model as well as to the baseline models (Supp. Table 8). 
 
-(add code for bootstrap and bayes factor)
+The code to create the 1000 bootstrap of evaluation metrics from each submission available in `challenge_infrastructure/boot_score.R`. 
+The Bayes Factor reported in Supp. Table 8 were  calculated using the code available in `code/BayesFactor_calc.R`. 
 
 
 ## C. Post challenge analysis
