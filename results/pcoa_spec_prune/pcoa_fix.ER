@@ -1,0 +1,90 @@
+Loading required package: carData
+Loading required package: permute
+Loading required package: lattice
+Error: package or namespace load failed for ‘vegan’ in dyn.load(file, DLLpath = DLLpath, ...):
+ unable to load shared object '/homes/perawija/R/x86_64-pc-linux-gnu-library/4.1/vegan/libs/vegan.so':
+  libRlapack.so: cannot open shared object file: No such file or directory
+Execution halted
+Loading required package: carData
+Loading required package: permute
+Loading required package: lattice
+This is vegan 2.6-2
+Loading required package: Hmisc
+
+Attaching package: ‘Hmisc’
+
+The following objects are masked from ‘package:base’:
+
+    format.pval, units
+
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:Hmisc’:
+
+    src, summarize
+
+The following object is masked from ‘package:car’:
+
+    recode
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+------------------------------------------------------------------------------
+You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)
+------------------------------------------------------------------------------
+
+Attaching package: ‘plyr’
+
+The following objects are masked from ‘package:dplyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize
+
+The following objects are masked from ‘package:Hmisc’:
+
+    is.discrete, summarize
+
+The following object is masked from ‘package:ggpubr’:
+
+    mutate
+
+Loading required package: phyloseq
+
+microbiome R package (microbiome.github.com)
+    
+
+
+ Copyright (C) 2011-2021 Leo Lahti, 
+    Sudarshan Shetty et al. <microbiome.github.io>
+
+
+Attaching package: ‘microbiome’
+
+The following object is masked from ‘package:vegan’:
+
+    diversity
+
+The following object is masked from ‘package:ggplot2’:
+
+    alpha
+
+The following object is masked from ‘package:base’:
+
+    transform
+
+Warning messages:
+1: Removed 2 rows containing non-finite values (stat_ellipse). 
+2: Removed 2 rows containing missing values (geom_point). 
+Warning message:
+Removed 2 rows containing missing values (geom_point). 
+Warning message:
+Removed 2 rows containing missing values (geom_point). 

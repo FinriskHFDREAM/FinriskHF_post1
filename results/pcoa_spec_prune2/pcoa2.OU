@@ -1,0 +1,413 @@
+[1] "file exists"
+       Row.names   Age BodyMassIndex Smoking BPTreatment PrevalentDiabetes
+1    Simulated_1 57.92      49.58678       0           1                 1
+2   Simulated_10 27.40      31.67991       0           0                 0
+3  Simulated_100 68.06      26.96201       1           0                 0
+4 Simulated_1000 55.51      22.28148       1           0                 0
+5 Simulated_1001 33.80      23.17020       0           0                 0
+6 Simulated_1002 49.77      26.37757       0           0                 0
+  PrevalentCHD PrevalentHFAIL Event Event_time SystolicBP NonHDLcholesterol Sex
+1            1              1     0      -4.34         NA              2.51   0
+2            0              0     0      15.82        121              4.08   0
+3            0              0     0       1.45        146              7.60   1
+4            0              0     0      15.88        121              4.87   1
+5            0              0     0      15.88        123              3.90   1
+6            0              0     0      15.87        121              3.94   0
+  Group age_group             ID p__Crenarchaeota.Abundance
+1 Score   (54,64]    Simulated_1               0.000000e+00
+2 Train   (24,34]   Simulated_10               2.180666e-06
+3 Score   (64,75]  Simulated_100               0.000000e+00
+4  Test   (54,64] Simulated_1000               3.456388e-06
+5 Score   (24,34] Simulated_1001               3.333550e-06
+6 Score   (44,54] Simulated_1002               0.000000e+00
+  p__Euryarchaeota.Abundance p__Thaumarchaeota.Abundance
+1               0.0043975111                           0
+2               0.0002885748                           0
+3               0.0871469667                           0
+4               0.0003387261                           0
+5               0.0001516765                           0
+6               0.0002783913                           0
+  p__Acidobacteria.Abundance p__Actinobacteria.Abundance p__Aquificae.Abundance
+1               3.656283e-05                 0.031384202           9.971680e-06
+2               9.340519e-05                 0.160488658           1.817222e-06
+3               2.927252e-05                 0.209868034           5.322277e-06
+4               4.723731e-05                 0.030878222           0.000000e+00
+5               6.167068e-05                 0.005733706           1.666775e-06
+6               1.354838e-04                 0.078907221           1.855942e-06
+  p__Armatimonadetes.Abundance p__Bacteroidetes.Abundance
+1                 0.000000e+00                  0.5028087
+2                 7.268887e-07                  0.2347443
+3                 0.000000e+00                  0.3090513
+4                 0.000000e+00                  0.3682021
+5                 5.000325e-06                  0.4983224
+6                 1.855942e-06                  0.5599673
+  p__Caldiserica.Abundance p__Calditrichaeota.Abundance p__Chlamydiae.Abundance
+1             0.000000e+00                            0            6.647787e-06
+2             0.000000e+00                            0            3.670788e-05
+3             2.661139e-06                            0            7.983416e-06
+4             0.000000e+00                            0            3.456388e-06
+5             0.000000e+00                            0            1.833453e-05
+6             0.000000e+00                            0            5.567825e-06
+  p__Chlorobi.Abundance p__Chloroflexi.Abundance p__Chrysiogenetes.Abundance
+1          2.991504e-05             1.329557e-05                0.000000e+00
+2          2.180666e-06             2.616799e-05                3.634443e-06
+3          1.862797e-05             4.257822e-05                0.000000e+00
+4          1.036917e-05             1.497768e-05                4.608518e-06
+5          2.166808e-05             1.166743e-05                1.666775e-06
+6          9.279709e-06             4.083072e-05                5.567825e-06
+  p__Cyanobacteria.Abundance p__Deferribacteres.Abundance
+1               1.130124e-04                 3.323893e-06
+2               9.849341e-05                 5.088221e-06
+3               0.000000e+00                 1.596683e-05
+4               0.000000e+00                 5.760647e-06
+5               0.000000e+00                 1.000065e-05
+6               1.670348e-04                 3.711884e-06
+  p__Deinococcus-Thermus.Abundance p__Dictyoglomi.Abundance
+1                     9.306902e-05             0.000000e+00
+2                     1.043085e-04             0.000000e+00
+3                     5.056163e-05             0.000000e+00
+4                     4.838944e-05             1.152129e-06
+5                     1.333420e-04             0.000000e+00
+6                     1.243481e-04             0.000000e+00
+  p__Elusimicrobia.Abundance p__Fibrobacteres.Abundance p__Firmicutes.Abundance
+1               0.000000e+00               0.000000e+00               0.4287889
+2               1.453777e-06               3.997888e-06               0.5564736
+3               0.000000e+00               2.661139e-06               0.3377890
+4               0.000000e+00               5.760647e-06               0.5830593
+5               0.000000e+00               5.000325e-06               0.4576681
+6               0.000000e+00               3.711884e-06               0.2760379
+  p__Fusobacteria.Abundance p__Gemmatimonadetes.Abundance
+1              6.980176e-05                             0
+2              3.634443e-05                             0
+3              5.322277e-05                             0
+4              2.534685e-05                             0
+5              3.333550e-05                             0
+6              1.113565e-05                             0
+  p__Ignavibacteriae.Abundance p__Kiritimatiellaeota.Abundance
+1                 0.000000e+00                    0.000000e+00
+2                 3.634443e-07                    1.090333e-06
+3                 0.000000e+00                    7.983416e-06
+4                 2.304259e-06                    0.000000e+00
+5                 0.000000e+00                    0.000000e+00
+6                 1.855942e-06                    2.598319e-05
+  p__Lentisphaerae.Abundance p__Nitrospinae.Abundance p__Nitrospirae.Abundance
+1               3.323893e-06             0.000000e+00             9.971680e-06
+2               3.634443e-07             3.634443e-06             5.088221e-06
+3               2.661139e-06             0.000000e+00             0.000000e+00
+4               0.000000e+00             6.912777e-06             3.456388e-06
+5               0.000000e+00             0.000000e+00             0.000000e+00
+6               0.000000e+00             2.227130e-05             3.711884e-06
+  p__Planctomycetes.Abundance p__Proteobacteria.Abundance
+1                3.323893e-05                 0.009546222
+2                2.253355e-05                 0.035884313
+3                2.661139e-05                 0.051772451
+4                2.304259e-05                 0.009060346
+5                2.833518e-05                 0.036432368
+6                3.340695e-05                 0.041270578
+  p__Spirochaetes.Abundance p__Synergistetes.Abundance p__Tenericutes.Abundance
+1              0.0002326725               6.647787e-05             1.130124e-04
+2              0.0001235711               5.051876e-05             2.616799e-05
+3              0.0001330569               3.725594e-05             8.249530e-05
+4              0.0001751237               3.225963e-05             6.106286e-05
+5              0.0002050133               4.333615e-05             4.500293e-05
+6              0.0001113565               6.681390e-05             3.155101e-05
+  p__Thermodesulfobacteria.Abundance p__Thermotogae.Abundance
+1                       6.647787e-06             1.994336e-05
+2                       2.544110e-06             3.270999e-06
+3                       5.322277e-06             5.322277e-06
+4                       5.760647e-06             4.608518e-06
+5                       0.000000e+00             0.000000e+00
+6                       0.000000e+00             1.855942e-06
+  p__Verrucomicrobia.Abundance p__ssRNA_viruses.Abundance       pcoa1
+1                 0.0138207491               0.000000e+00  0.06963973
+2                 0.0107128852               1.453777e-06 -0.07903433
+3                 0.0016978064               7.983416e-06  0.04072902
+4                 0.0071305294               3.456388e-06 -0.03446492
+5                 0.0005050328               0.000000e+00 -0.06573509
+6                 0.0419535643               3.711884e-06  0.01419612
+        pcoa2
+1 -0.03188314
+2 -0.18109988
+3 -0.02914143
+4 -0.09629107
+5 -0.14198750
+6  0.04698296
+[1] "pcoa plot1"
+[1] "pcoa plot2"
+[1] "pcoa plot3"
+[1] "file exists"
+[1] "file exists"
+       Row.names   Age BodyMassIndex Smoking BPTreatment PrevalentDiabetes
+1    Simulated_1 57.92      49.58678       0           1                 1
+2   Simulated_10 27.40      31.67991       0           0                 0
+3  Simulated_100 68.06      26.96201       1           0                 0
+4 Simulated_1000 55.51      22.28148       1           0                 0
+5 Simulated_1001 33.80      23.17020       0           0                 0
+6 Simulated_1002 49.77      26.37757       0           0                 0
+  PrevalentCHD PrevalentHFAIL Event Event_time SystolicBP NonHDLcholesterol Sex
+1            1              1     0      -4.34         NA              2.51   0
+2            0              0     0      15.82        121              4.08   0
+3            0              0     0       1.45        146              7.60   1
+4            0              0     0      15.88        121              4.87   1
+5            0              0     0      15.88        123              3.90   1
+6            0              0     0      15.87        121              3.94   0
+  Group age_group             ID p__Crenarchaeota.Abundance
+1 Score   (54,64]    Simulated_1               0.000000e+00
+2 Train   (24,34]   Simulated_10               2.180666e-06
+3 Score   (64,75]  Simulated_100               0.000000e+00
+4  Test   (54,64] Simulated_1000               3.456388e-06
+5 Score   (24,34] Simulated_1001               3.333550e-06
+6 Score   (44,54] Simulated_1002               0.000000e+00
+  p__Euryarchaeota.Abundance p__Thaumarchaeota.Abundance
+1               0.0043975111                           0
+2               0.0002885748                           0
+3               0.0871469667                           0
+4               0.0003387261                           0
+5               0.0001516765                           0
+6               0.0002783913                           0
+  p__Acidobacteria.Abundance p__Actinobacteria.Abundance p__Aquificae.Abundance
+1               3.656283e-05                 0.031384202           9.971680e-06
+2               9.340519e-05                 0.160488658           1.817222e-06
+3               2.927252e-05                 0.209868034           5.322277e-06
+4               4.723731e-05                 0.030878222           0.000000e+00
+5               6.167068e-05                 0.005733706           1.666775e-06
+6               1.354838e-04                 0.078907221           1.855942e-06
+  p__Armatimonadetes.Abundance p__Bacteroidetes.Abundance
+1                 0.000000e+00                  0.5028087
+2                 7.268887e-07                  0.2347443
+3                 0.000000e+00                  0.3090513
+4                 0.000000e+00                  0.3682021
+5                 5.000325e-06                  0.4983224
+6                 1.855942e-06                  0.5599673
+  p__Caldiserica.Abundance p__Calditrichaeota.Abundance p__Chlamydiae.Abundance
+1             0.000000e+00                            0            6.647787e-06
+2             0.000000e+00                            0            3.670788e-05
+3             2.661139e-06                            0            7.983416e-06
+4             0.000000e+00                            0            3.456388e-06
+5             0.000000e+00                            0            1.833453e-05
+6             0.000000e+00                            0            5.567825e-06
+  p__Chlorobi.Abundance p__Chloroflexi.Abundance p__Chrysiogenetes.Abundance
+1          2.991504e-05             1.329557e-05                0.000000e+00
+2          2.180666e-06             2.616799e-05                3.634443e-06
+3          1.862797e-05             4.257822e-05                0.000000e+00
+4          1.036917e-05             1.497768e-05                4.608518e-06
+5          2.166808e-05             1.166743e-05                1.666775e-06
+6          9.279709e-06             4.083072e-05                5.567825e-06
+  p__Cyanobacteria.Abundance p__Deferribacteres.Abundance
+1               1.130124e-04                 3.323893e-06
+2               9.849341e-05                 5.088221e-06
+3               0.000000e+00                 1.596683e-05
+4               0.000000e+00                 5.760647e-06
+5               0.000000e+00                 1.000065e-05
+6               1.670348e-04                 3.711884e-06
+  p__Deinococcus-Thermus.Abundance p__Dictyoglomi.Abundance
+1                     9.306902e-05             0.000000e+00
+2                     1.043085e-04             0.000000e+00
+3                     5.056163e-05             0.000000e+00
+4                     4.838944e-05             1.152129e-06
+5                     1.333420e-04             0.000000e+00
+6                     1.243481e-04             0.000000e+00
+  p__Elusimicrobia.Abundance p__Fibrobacteres.Abundance p__Firmicutes.Abundance
+1               0.000000e+00               0.000000e+00               0.4287889
+2               1.453777e-06               3.997888e-06               0.5564736
+3               0.000000e+00               2.661139e-06               0.3377890
+4               0.000000e+00               5.760647e-06               0.5830593
+5               0.000000e+00               5.000325e-06               0.4576681
+6               0.000000e+00               3.711884e-06               0.2760379
+  p__Fusobacteria.Abundance p__Gemmatimonadetes.Abundance
+1              6.980176e-05                             0
+2              3.634443e-05                             0
+3              5.322277e-05                             0
+4              2.534685e-05                             0
+5              3.333550e-05                             0
+6              1.113565e-05                             0
+  p__Ignavibacteriae.Abundance p__Kiritimatiellaeota.Abundance
+1                 0.000000e+00                    0.000000e+00
+2                 3.634443e-07                    1.090333e-06
+3                 0.000000e+00                    7.983416e-06
+4                 2.304259e-06                    0.000000e+00
+5                 0.000000e+00                    0.000000e+00
+6                 1.855942e-06                    2.598319e-05
+  p__Lentisphaerae.Abundance p__Nitrospinae.Abundance p__Nitrospirae.Abundance
+1               3.323893e-06             0.000000e+00             9.971680e-06
+2               3.634443e-07             3.634443e-06             5.088221e-06
+3               2.661139e-06             0.000000e+00             0.000000e+00
+4               0.000000e+00             6.912777e-06             3.456388e-06
+5               0.000000e+00             0.000000e+00             0.000000e+00
+6               0.000000e+00             2.227130e-05             3.711884e-06
+  p__Planctomycetes.Abundance p__Proteobacteria.Abundance
+1                3.323893e-05                 0.009546222
+2                2.253355e-05                 0.035884313
+3                2.661139e-05                 0.051772451
+4                2.304259e-05                 0.009060346
+5                2.833518e-05                 0.036432368
+6                3.340695e-05                 0.041270578
+  p__Spirochaetes.Abundance p__Synergistetes.Abundance p__Tenericutes.Abundance
+1              0.0002326725               6.647787e-05             1.130124e-04
+2              0.0001235711               5.051876e-05             2.616799e-05
+3              0.0001330569               3.725594e-05             8.249530e-05
+4              0.0001751237               3.225963e-05             6.106286e-05
+5              0.0002050133               4.333615e-05             4.500293e-05
+6              0.0001113565               6.681390e-05             3.155101e-05
+  p__Thermodesulfobacteria.Abundance p__Thermotogae.Abundance
+1                       6.647787e-06             1.994336e-05
+2                       2.544110e-06             3.270999e-06
+3                       5.322277e-06             5.322277e-06
+4                       5.760647e-06             4.608518e-06
+5                       0.000000e+00             0.000000e+00
+6                       0.000000e+00             1.855942e-06
+  p__Verrucomicrobia.Abundance p__ssRNA_viruses.Abundance       pcoa1
+1                 0.0138207491               0.000000e+00  0.06963973
+2                 0.0107128852               1.453777e-06 -0.07903433
+3                 0.0016978064               7.983416e-06  0.04072902
+4                 0.0071305294               3.456388e-06 -0.03446492
+5                 0.0005050328               0.000000e+00 -0.06573509
+6                 0.0419535643               3.711884e-06  0.01419612
+        pcoa2
+1 -0.03188314
+2 -0.18109988
+3 -0.02914143
+4 -0.09629107
+5 -0.14198750
+6  0.04698296
+[1] "pcoa plot1"
+[1] "pcoa plot2"
+[1] "pcoa plot3"
+[1] "file exists"
+[1] "file exists"
+       Row.names   Age BodyMassIndex Smoking BPTreatment PrevalentDiabetes
+1    Simulated_1 57.92      49.58678       0           1                 1
+2   Simulated_10 27.40      31.67991       0           0                 0
+3  Simulated_100 68.06      26.96201       1           0                 0
+4 Simulated_1000 55.51      22.28148       1           0                 0
+5 Simulated_1001 33.80      23.17020       0           0                 0
+6 Simulated_1002 49.77      26.37757       0           0                 0
+  PrevalentCHD PrevalentHFAIL Event Event_time SystolicBP NonHDLcholesterol Sex
+1            1              1     0      -4.34         NA              2.51   0
+2            0              0     0      15.82        121              4.08   0
+3            0              0     0       1.45        146              7.60   1
+4            0              0     0      15.88        121              4.87   1
+5            0              0     0      15.88        123              3.90   1
+6            0              0     0      15.87        121              3.94   0
+  Group age_group             ID p__Crenarchaeota.Abundance
+1 Score   (54,64]    Simulated_1               0.000000e+00
+2 Train   (24,34]   Simulated_10               2.180666e-06
+3 Score   (64,75]  Simulated_100               0.000000e+00
+4  Test   (54,64] Simulated_1000               3.456388e-06
+5 Score   (24,34] Simulated_1001               3.333550e-06
+6 Score   (44,54] Simulated_1002               0.000000e+00
+  p__Euryarchaeota.Abundance p__Thaumarchaeota.Abundance
+1               0.0043975111                           0
+2               0.0002885748                           0
+3               0.0871469667                           0
+4               0.0003387261                           0
+5               0.0001516765                           0
+6               0.0002783913                           0
+  p__Acidobacteria.Abundance p__Actinobacteria.Abundance p__Aquificae.Abundance
+1               3.656283e-05                 0.031384202           9.971680e-06
+2               9.340519e-05                 0.160488658           1.817222e-06
+3               2.927252e-05                 0.209868034           5.322277e-06
+4               4.723731e-05                 0.030878222           0.000000e+00
+5               6.167068e-05                 0.005733706           1.666775e-06
+6               1.354838e-04                 0.078907221           1.855942e-06
+  p__Armatimonadetes.Abundance p__Bacteroidetes.Abundance
+1                 0.000000e+00                  0.5028087
+2                 7.268887e-07                  0.2347443
+3                 0.000000e+00                  0.3090513
+4                 0.000000e+00                  0.3682021
+5                 5.000325e-06                  0.4983224
+6                 1.855942e-06                  0.5599673
+  p__Caldiserica.Abundance p__Calditrichaeota.Abundance p__Chlamydiae.Abundance
+1             0.000000e+00                            0            6.647787e-06
+2             0.000000e+00                            0            3.670788e-05
+3             2.661139e-06                            0            7.983416e-06
+4             0.000000e+00                            0            3.456388e-06
+5             0.000000e+00                            0            1.833453e-05
+6             0.000000e+00                            0            5.567825e-06
+  p__Chlorobi.Abundance p__Chloroflexi.Abundance p__Chrysiogenetes.Abundance
+1          2.991504e-05             1.329557e-05                0.000000e+00
+2          2.180666e-06             2.616799e-05                3.634443e-06
+3          1.862797e-05             4.257822e-05                0.000000e+00
+4          1.036917e-05             1.497768e-05                4.608518e-06
+5          2.166808e-05             1.166743e-05                1.666775e-06
+6          9.279709e-06             4.083072e-05                5.567825e-06
+  p__Cyanobacteria.Abundance p__Deferribacteres.Abundance
+1               1.130124e-04                 3.323893e-06
+2               9.849341e-05                 5.088221e-06
+3               0.000000e+00                 1.596683e-05
+4               0.000000e+00                 5.760647e-06
+5               0.000000e+00                 1.000065e-05
+6               1.670348e-04                 3.711884e-06
+  p__Deinococcus-Thermus.Abundance p__Dictyoglomi.Abundance
+1                     9.306902e-05             0.000000e+00
+2                     1.043085e-04             0.000000e+00
+3                     5.056163e-05             0.000000e+00
+4                     4.838944e-05             1.152129e-06
+5                     1.333420e-04             0.000000e+00
+6                     1.243481e-04             0.000000e+00
+  p__Elusimicrobia.Abundance p__Fibrobacteres.Abundance p__Firmicutes.Abundance
+1               0.000000e+00               0.000000e+00               0.4287889
+2               1.453777e-06               3.997888e-06               0.5564736
+3               0.000000e+00               2.661139e-06               0.3377890
+4               0.000000e+00               5.760647e-06               0.5830593
+5               0.000000e+00               5.000325e-06               0.4576681
+6               0.000000e+00               3.711884e-06               0.2760379
+  p__Fusobacteria.Abundance p__Gemmatimonadetes.Abundance
+1              6.980176e-05                             0
+2              3.634443e-05                             0
+3              5.322277e-05                             0
+4              2.534685e-05                             0
+5              3.333550e-05                             0
+6              1.113565e-05                             0
+  p__Ignavibacteriae.Abundance p__Kiritimatiellaeota.Abundance
+1                 0.000000e+00                    0.000000e+00
+2                 3.634443e-07                    1.090333e-06
+3                 0.000000e+00                    7.983416e-06
+4                 2.304259e-06                    0.000000e+00
+5                 0.000000e+00                    0.000000e+00
+6                 1.855942e-06                    2.598319e-05
+  p__Lentisphaerae.Abundance p__Nitrospinae.Abundance p__Nitrospirae.Abundance
+1               3.323893e-06             0.000000e+00             9.971680e-06
+2               3.634443e-07             3.634443e-06             5.088221e-06
+3               2.661139e-06             0.000000e+00             0.000000e+00
+4               0.000000e+00             6.912777e-06             3.456388e-06
+5               0.000000e+00             0.000000e+00             0.000000e+00
+6               0.000000e+00             2.227130e-05             3.711884e-06
+  p__Planctomycetes.Abundance p__Proteobacteria.Abundance
+1                3.323893e-05                 0.009546222
+2                2.253355e-05                 0.035884313
+3                2.661139e-05                 0.051772451
+4                2.304259e-05                 0.009060346
+5                2.833518e-05                 0.036432368
+6                3.340695e-05                 0.041270578
+  p__Spirochaetes.Abundance p__Synergistetes.Abundance p__Tenericutes.Abundance
+1              0.0002326725               6.647787e-05             1.130124e-04
+2              0.0001235711               5.051876e-05             2.616799e-05
+3              0.0001330569               3.725594e-05             8.249530e-05
+4              0.0001751237               3.225963e-05             6.106286e-05
+5              0.0002050133               4.333615e-05             4.500293e-05
+6              0.0001113565               6.681390e-05             3.155101e-05
+  p__Thermodesulfobacteria.Abundance p__Thermotogae.Abundance
+1                       6.647787e-06             1.994336e-05
+2                       2.544110e-06             3.270999e-06
+3                       5.322277e-06             5.322277e-06
+4                       5.760647e-06             4.608518e-06
+5                       0.000000e+00             0.000000e+00
+6                       0.000000e+00             1.855942e-06
+  p__Verrucomicrobia.Abundance p__ssRNA_viruses.Abundance       pcoa1
+1                 0.0138207491               0.000000e+00  0.06963973
+2                 0.0107128852               1.453777e-06 -0.07903433
+3                 0.0016978064               7.983416e-06  0.04072902
+4                 0.0071305294               3.456388e-06 -0.03446492
+5                 0.0005050328               0.000000e+00 -0.06573509
+6                 0.0419535643               3.711884e-06  0.01419612
+        pcoa2
+1 -0.03188314
+2 -0.18109988
+3 -0.02914143
+4 -0.09629107
+5 -0.14198750
+6  0.04698296
+[1] "pcoa plot1"
+[1] "pcoa plot2"
+[1] "pcoa plot3"
