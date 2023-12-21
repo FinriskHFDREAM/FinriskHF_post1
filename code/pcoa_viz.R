@@ -17,7 +17,7 @@ args=(commandArgs(TRUE))
 mainDir <- paste0(args[1])
 PARAM <- list()
 PARAM$folder.R <- paste0(mainDir, "/")
-PARAM$folder.results <- paste0(PARAM$folder.R, "results/pcoa_spec_prune/")
+PARAM$folder.results <- paste0(PARAM$folder.R, "results/pcoa_spec_prune2/")
 
 #open the PCoA calc
 
@@ -27,6 +27,7 @@ PARAM$folder.results <- paste0(PARAM$folder.R, "results/pcoa_spec_prune/")
 values=c("#1976D2", "#009688", "#FFDB6D", "#C4961A", "#CC79A7", 
          "#D16103", "#C3D7A4", "#52854C", "#4E84C4", "#293352")
 
+#values =c("#e41a1c","#377eb8","#4daf4a", "#984ea3", "#ff7f00", "#a65628"))
 # load data
 S.test <- read.csv(file = paste0(PARAM$folder.R, 
                                    "input_real/test/pheno_test.csv"), 
@@ -62,7 +63,6 @@ O.score <- read.csv(file = paste0(PARAM$folder.R , "input_real/scoring_nohide/re
 # bind all tables
 phe.table <- rbind(S.train, S.test, S.score)
 otu.total  <- cbind(O.train, O.test, O.score)
-otu.total[1:5,1:5]
 
 #taxtable
 taxtable <- strsplit(row.names(as.matrix(otu.total)), ";")
@@ -84,6 +84,7 @@ phf.rel <- microbiome::transform(physpec, 'compositional')
 #calculate pcoa
 if (file.exists(paste0(PARAM$folder.results,
                   "pcoa_betadis.rds"))) {
+  print("file exists")
   phfs.pseq.rel.pcoa <- readRDS(paste0(PARAM$folder.results,
                    "pcoa_betadis.rds"))
 } else {
@@ -91,9 +92,17 @@ phfs.pseq.rel.pcoa <- ordinate(phf.rel, method="PCoA", distance="bray")
 saveRDS(phfs.pseq.rel.pcoa,paste0(PARAM$folder.results,
                    "pcoa_betadis.rds"))
 }
+
+
+meta=phe.table#[1:100,]
+meta$ID<-rownames(meta)
+otu<- abundances(phf.rel)
+
+
 #calculate bray
-if (file.exists(aste0(PARAM$folder.results,
+if (file.exists(paste0(PARAM$folder.results,
                    "betadis.rds"))) {
+  print("file exists")
   bray.dist.m <- readRDS(paste0(PARAM$folder.results,
                    "betadis.rds"))
 } else {
@@ -101,10 +110,6 @@ bray.dist.m <- vegdist(t(otu), method="bray")
 saveRDS(bray.dist.m,paste0(PARAM$folder.results,               
   "betadis.rds"))
 }
-
-meta=phe.table#[1:100,]
-meta$ID<-rownames(meta)
-otu<- abundances(phf.rel)
 # how much the abundance of each phyla correlates with the first two PCoA axis?
 # also, we skip Plasmid phyla
 
@@ -133,28 +138,78 @@ df <- phyla.df2
 ord.pcoa <- phfs.pseq.rel.pcoa
 # Flip orientation for good layout
 head(df)
-df$pcoa2 = -df$pcoa2
-df$pcoa2 = -df$pcoa2
+df$pcoa1 = -df$pcoa1
+#df$pcoa2 = -df$pcoa2
 #viz
 #plot pcoa
 p.pcoa <- df %>%
 ggplot(aes(x=pcoa1, y=pcoa2, 
            color= as.factor(Group)))+ #replace with Event
-  geom_point(alpha=0.6, size=0.5) + 
+  geom_point(alpha=0.8, size=0.5) + 
   labs(x = "PCoA 1", y = "PCoA 2") +
   theme_classic() + 
-  scale_color_manual(values = values)+
+  xlim(-0.50, 0.50) +
+  ylim(-0.50, 0.50) +
+  scale_color_manual(labels = c("Without incident HF", "With incident HF", "Score set", "Test set", "Train set"),values = values)+
   scale_fill_manual(values = values) +
   stat_ellipse(inherit.aes = F, #in your example should be able to just use stat_ellipse()
-               aes(color=as.factor(Event), x=pcoa1, y=pcoa2))
+               aes(color=as.factor(Event), x=pcoa1, y=pcoa2))+
+  theme(legend.title= element_blank())
 
 # extract relative eigenvalues (proportion of variance explained by each axis)
 p.pcoa <- p.pcoa + xlab(paste("PCoA 1 (", round(100*ord.pcoa$values$Relative_eig[1],1), "%", ")", sep = ""))
 p.pcoa <- p.pcoa + ylab(paste("PCoA 2 (", round(100*ord.pcoa$values$Relative_eig[2],1), "%", ")", sep = ""))
 
 
-print("pcoa plot")
+print("pcoa plot1")
 ggsave(p.pcoa, 
        file=paste0(PARAM$folder.results,
                    "betadiv_pcoa_group.pdf"), 
-       width = 5, height=5)
+       width = 7, height=5)
+
+p.pcoa <- df %>%
+ggplot(aes(x=pcoa1, y=pcoa2, 
+           color= as.factor(Group),
+           #shape = as.factor(Event)
+           ))+ #replace with Event
+  geom_point(alpha=0.6, size=1) + 
+  labs(x = "PCoA 1", y = "PCoA 2") +
+  theme_classic() + 
+  xlim(-0.50, 0.50) +
+  ylim(-0.50, 0.50) +
+  scale_color_manual(labels = c("Score set", "Test set", "Train set"),values = values)+
+  #scale_shape_discrete(labels=c("Without incident HF", "With incident HF"))+ 
+  scale_fill_manual(values = values)+
+  theme(legend.title= element_blank())
+
+# extract relative eigenvalues (proportion of variance explained by each axis)
+p.pcoa <- p.pcoa + xlab(paste("PCoA 1 (", round(100*ord.pcoa$values$Relative_eig[1],1), "%", ")", sep = ""))
+p.pcoa <- p.pcoa + ylab(paste("PCoA 2 (", round(100*ord.pcoa$values$Relative_eig[2],1), "%", ")", sep = ""))
+print("pcoa plot2")
+ggsave(p.pcoa, 
+       file=paste0(PARAM$folder.results,
+                   "betadiv_pcoa_group_noeclipseFlip.pdf"), 
+       width = 7, height=5)
+
+
+p.pcoa <- df %>%
+ggplot(aes(x=pcoa1, y=pcoa2, 
+           color= as.factor(Event)))+ #replace with Event
+  geom_point(alpha=0.6, size=0.5) + 
+  labs(x = "PCoA 1", y = "PCoA 2") +
+  theme_classic() + 
+  xlim(-0.50, 0.50) +
+  ylim(-0.50, 0.50) +
+  scale_color_manual(labels = c("Without incident HF", "With incident HF"),values = values)+
+  scale_fill_manual(values = values) +
+  theme(legend.title= element_blank())
+
+# extract relative eigenvalues (proportion of variance explained by each axis)
+p.pcoa <- p.pcoa + xlab(paste("PCoA 1 (", round(100*ord.pcoa$values$Relative_eig[1],1), "%", ")", sep = ""))
+p.pcoa <- p.pcoa + ylab(paste("PCoA 2 (", round(100*ord.pcoa$values$Relative_eig[2],1), "%", ")", sep = ""))
+print("pcoa plot3")
+ggsave(p.pcoa, 
+       file=paste0(PARAM$folder.results,
+                   "betadiv_pcoa_group_event.pdf"), 
+       width = 7, height=5)
+

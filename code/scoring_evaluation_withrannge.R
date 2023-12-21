@@ -87,7 +87,7 @@ teststats <-  function(S,predicted) {
   # S is the actual survival object that is needed, eg "y" from a fitted model
   C <- rcorr.cens(-predicted,S,outx=FALSE)[1] # in rcorr.cens, when using a Survival object, the sign of the predicted score has to be changed
   print(C)
-  hoslem_p <- HosLem.test(S,predicted,plot="submission_phase") # fit$y is the actual survival object that is needed 
+  hoslem_p <- HosLem.test(S,predicted,plot=FALSE) # fit$y is the actual survival object that is needed 
   list(C=C,hoslem_p=hoslem_p)
 }
 
