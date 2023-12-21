@@ -60,14 +60,14 @@ list_boots <- list.files(PARAM$folder.R, pattern = "\\_boots.csv", recursive = T
 print(list_boots)
 list_team <- list_boots %>%
     strsplit( "/" ) %>%
-    sapply( "[", 9 )
+    sapply( "[", 2 )
 boots_df <- list_boots %>% lapply(read.csv)
 print(list_team)
 
 #Harell's C
 harrell_df <- lapply(boots_df, "[", c("harrell_c")) %>% bind_cols()
 colnames(harrell_df) <- c(list_team)
-write.csv(harrell_df,file.path(PARAM$folder.data,"bootstrap_Harrell_c_baseline0814.csv"))
+write.csv(harrell_df,file.path(PARAM$folder.data,"bootstrap_Harrell_c_baseline1020.csv"))
 harrell_df %>% 
     gather(teams,Harell) %>% group_by(teams) %>%
     summarise(mean_Harell_BS = mean(Harell),
@@ -88,7 +88,7 @@ Bayes_factors %>% mutate(Bayes_factor = round(Bayes_factor,2),
 #Hoslem
 hoslem_df <- lapply(boots_df, "[", c("hoslem_test")) %>% bind_cols()
 colnames(hoslem_df) <- c(list_team)
-write.csv(hoslem_df,file.path(PARAM$folder.data,"bootstrap_hoslem_baseline0814.csv"))
+write.csv(hoslem_df,file.path(PARAM$folder.data,"bootstrap_hoslem_baseline1020.csv"))
 hoslem_df %>% 
     gather(teams,Hoslem) %>% group_by(teams) %>%
     summarise(mean_Hoslem_BS = mean(Hoslem),
