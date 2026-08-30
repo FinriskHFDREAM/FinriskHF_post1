@@ -1,135 +1,593 @@
-cran_packages <- c("tidyverse", "BiocManager", "knitr", "ggrepel", "pROC", "vegan",
-                   "reshape2", "ggplot2", "ggpubr", "car",  "dplyr", "plyr")
-for (i in cran_packages) {
-  if (!require(i, character.only = TRUE))
-    install.packages(i)
-}
-#load library
-library(knitr)
-library(tidyverse)
+##########################################################################
+# PCoA / Bray-Curtis comparison of Train, Test and Score microbiome datsets
+#
+Purpose:
+  #   Asses whether microbiome community composition is comparable between
+  #  training, testing and scoring datsets.
+  #
+  # Works for both REAL and SYNTHETIC datasets provided tha theinput files
+  # have thsame structure and variable names.
+  ####################################################################
+
+rm(list = ls())
+
+#####################################################################
+# 1. Packages
+##################################################################
+
+library(tidyr)
+library(ggrepel)
+library(pROC)
+library(vegan)
+library(reshape2)
 library(ggplot2)
 library(ggpubr)
 library(car)
-library(vegan)
-​
-# load file
-folder <- gsub("/scp", "", getwd())
-folder.results <- paste0(folder, "/results/")
-file.path(folder, 'data/mobi.Rdata')
-​
-# load data
-load(file=file.path(folder, 'data/mobi.Rdata'))
-meta$ID <- rownames(meta)
-​
-# motu.abs is the absolue counts of species
-# head(motus.abs)
-# MMPC35551931ST MMPC41376408ST
-#'Candidatus Kapabacteria' thiocyanatum [r_10354]              0              0
-#Abiotrophia defectiva [r_04788]                               0              0
-​
-# head meta
-# environment_material status
-#MMPC35551931ST	feces [ENVO:00002003]	PC	1	0	
-#MMPC41376408ST	feces [ENVO:00002003]	PC	1	0	
-#MMPC59659730ST	feces [ENVO:00002003]
-​
-# apply filter and check if we loose so muc, we can adjust
-motu.abs.fil <- motu.abs[rowSums(motu.abs >= 10^-5) >= 2,colSums(motu.abs) > 1200 ]
-​
-dim(motu.abs)
-dim(motu.abs.fil)
-​
-# calculate bray curtis
-motu.t = t(motu.abs.fil)
-min_seq = min(rowSums(motu.t))
-​
-beta_dist.rar <-t(motu.abs.fil) %>%
-  vegan::avgdist(dmethod = "bray", sample = min_seq)
-nmds.rar <- metaMDS(beta_dist.rar) %>% scores(display=c("sites")) %>% as.tibble(rownames="ID")
-​
-# combine metadata and betadiv
-meta_nmds.rar <- dplyr::inner_join(meta, nmds.rar)
-​
-p.betadiv.ord.rar <- ggplot(meta_nmds.rar, 
-                            aes(x = NMDS1, 
-                                y = NMDS2, 
-                                color = status)) + #change color here accordingly such as age groups, gender
-  geom_point() +
-  stat_ellipse() +
-  scale_colour_manual(values = c("#e41a1c",  # add colors according to number of categories
-                                # "#984ea3", 
-                                 #"#377eb8",
-                                 #"#4daf4a",
-                                 "#ff7f00")) +
-  theme_classic()
-​
-p.betadiv.ord.rar
-ggsave(p.betadiv.ord.rar, file=paste0(folder.results,
-                                      "betadiv_nmds_ordination.pdf"), 
-       width = 5, height=4)
-​
-​
-# prepare pcoa
-dist_tbl <- as_tibble(as.matrix(beta_dist.rar), 
-                      rownames="samples")
-​
-dist_matrix <- dist_tbl %>%
-  pivot_longer(cols=-samples, names_to="b", values_to="distances") %>%
-  select(samples, b, distances) %>%
-  pivot_wider(names_from="b", values_from="distances") %>%
-  select(-samples) %>%
-  as.dist()
-​
-pcoa <- cmdscale(dist_matrix, eig=TRUE, add=TRUE)
+library(dplyr)
+library(plyr)
+library(glue)
+library(tibble)
+library(phyloseq)
+library(ggExtra)
+library(patchwork)
+
+###############################################################
+# 2. Input arguments
+#############################################################
+
+args <- commandArgs(TRUE)
+mainDir <- paste0(args[1])
+
+PARAM <- list()
+
+PARAM$folder.R <- paste0(mainDir, "/")
+
+PARAM$folder.results <- paste0(
+  PARAM$folder.R,
+  "results/"
+)
+# Create results directory if itdoes not exist
+if (!dir.exists(PARAM$folder.results)) {
+  dir.create(
+    PARAM$folder.result,
+    recursive = TRUE
+  )
+}
+
+#############################################################
+# 3. Load phenotype data
+###################################################################
+
+print("Loading phenotype data...")
+S.test <- read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/test/pheno_test.csv"
+  ),
+  row.names = 1,
+  check.names = FALSE
+)
+
+S.train <- read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/train/pheno_training.csv"
+  ),
+  row.names = 1,
+  check.names = FALSE
+)
+
+S.score <- read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/scoring_nohide/pheno_scoring_nohide.csv"
+  ),
+  row.names = 1,
+  check.names = FALSE
+)
+################################################################
+# 4. Add datset labels
+#######################################################################
+
+S.test$Group <- "Test"
+S.train$Group <- "Train"
+S.score$Group <- "Score"
+
+########################################################################
+# 6. Combine phenotype data
+###################################################################
+phe.table <-rbind(
+  S.train,
+  S.test,
+  S.score
+)
+# Make sure row names are preserved as ample IDs
+phe.table$ID <- rownames(phe.table)
+
+###################################################################
+# 7.Load microbiome read-count data
+#####################################################################
+print("Loading microbiome data...")
+
+O.train <- read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/train/readcounts_training.csv"
+  ),
+  row.names = 1,
+  check.names = FALSE
+)
+
+O.test <- read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/test/readcounts_test.csv"
+  ),
+  row.names = 1,
+  check.names = FALSE
+)
+
+O.score <-read.csv(
+  file = paste0(
+    PARAM$folder.R,
+    "input_real/scoring_nohide/readcounts_scoring.csv"
+  ),
+  row.names =1,
+  check.names = FALSE
+)
+
+############################################################
+# 8. Combine microbiome tables
+#
+# Columns = samples
+# Rows    = taxa
+##############################################################
+
+otu.total <- cbind(
+  O.train,
+  O.test,
+  O.score
+)
+###############################################################
+# 9. Check that phenotype and microbiome sample IDs match
+###################################################################
+
+common_samples <- intersect(
+  colnames(otu.total),
+  rownames(phe.table)
+)
+
+print(
+  paste(
+    "Number of samples with both phenotype and microbiome data:",
+    length(common_samples)
+  )
+)
+# Keep only common samples and putthem in the same orde
+otu.total <- otu.total[, common_samples, drop = FALSE]
+
+phe.table <- phe.table[
+  common_samples,
+  ,
+  drop = FALSE
+]
+
+###################################################################
+# 10.Create taxonomy table
+#
+# Taxonomic names are assumed to be separated by ";"
+####################################################################
+
+print("Creating axonmy table...")
+
+taxa_names_original <- rownames(otu.total)
+
+taxtable <- strsplit(
+  taxa_names_original,
+  ";"
+)
+taxtable <- matrix(
+  unlist(taxtable),
+  nrow = length(taxtable),
+  byrow = TRUE
+)
+# Make sure the taxonomy table has sevn columns
+expected_taxa_levels <- c(
+  "Domain",
+  "Phylum",
+  "Class",
+  "Order",
+  "Family",
+  "Genus",
+  "Species"
+)
+
+if (ncol(taxtable) < length(expected_taxa_levels)) {
+  
+  taxtable <- cbind(
+    taxtable,
+    matrix(
+      NA,
+      nrow = nrow(taxtable),
+      ncol = length(expected_taxa_levels) - ncol(taxable)
+    )
+  )
+}
+
+if (ncol(taxtable) > length(expected_taxa_levels)) {
+  
+  taxtable <- taxable[
+    ,
+    seq_along(expected_taxa_leves),
+    drop = FALSE
+  ]
+}
+colnames(taxtable) <- expected_taxa_levels
+rownames(taxtable) <- taxa_names_original
+
+################################################################
+# 11. Create phyloseq object
+###############################################################
+
+phyOb <- phyloseq(
+  otu_table(
+    as.matrix(otu.total),
+    taxa_are_rows = TRUE
+  ),
+  tax_table(
+    taxtable
+  ),
+  sample_data(
+    phe.table
+  ))
+
+
+##################################################################
+# 12. Aggregate to species level
+################################################################
+
+print("Aggregating microbiome data to species lvel...")
+
+physec <- tax_glom(
+  phyOb,
+  taxrank = "Species",
+  NArm = FALSE
+)
+
+######################################################################
+# 13. Remove taxa without species-level assignment
+##################################################################
+
+tax_species <- as.data.frame(
+  tax_table(physec)
+)
+
+keep_species <- !is.na(tax_species$Species) &
+  tax_species$Species != "" &
+  tax_species$Species != "s__"
+
+physec <- prune_taxa(
+  keep_secies,
+  physec
+)
+print(
+  paste(
+    "Number of species retained:",
+    ntaxa(physec)
+  )
+)
+###############################################################
+# 14. Extract species abundance matrix
+#
+# phyloseq convention:
+#   rows = taxa
+#   columns = samples
+####################################################################
+
+otu_spec <- as(
+  otu_table(physec),
+  "matrix"
+)
+
+if (!taxa_are_rows(physec)) {
+  otu_spec <- t(otu_spec)
+}
+
+################################################################
+# 15. Convert counts to relative abundace
+#
+# Bray-Curtis can be calculated on relative abundances.
+#####################################################################
+
+sample_totals <- colSums(
+  otu_spec,
+  na.rm = TRUE
+)
+
+# Remove samples with zero toal abundance
+keep_samples <-sample_totals > 0
+
+otu_spec <- otu_spec[
+  ,
+  keep_samples,
+  drop = FALSE
+]
+sample_totals <-sample_totals[
+  keep_samples
+]
+
+otu_spec_rel <- sweep(
+  otu_spec,
+  2,
+  sample_totals,
+  FUN = "/"
+)
+
+##################################################################
+# 16. Make sure phenotype data are aligned
+####################################################################
+
+comon_samples <- intersect(
+  colnames(otu_spec_rel),
+  rownames(phe.table)
+)
+otu_spec_rel <- otu_spec_rel[
+  , common_samples,
+  drop = FALSE
+]
+
+phe.table <- phe.table[
+  common_samples,
+  ,
+  drop = FALSE
+]
+# Check alignment
+stopifnot(
+  identical(
+    colnames(otu_spec_rel),
+    rownames(phe.table)
+  )
+)
+#############################################################
+# 17. Bray-Curtis dissmilarity
+###############################################################
+
+print("Calculating Bray-Curtis dissimilarity...")
+
+# vegdist expects:
+#   rows = samples
+#   columns = species
+
+otu_samples <- t(
+  otu_spec_rel
+)
+beta_dist <- vegan::vegdist(
+  otu_samples,
+  method = "bray"
+)
+saveRDS(
+  beta_dist,
+  file = paste0(
+    PARAM$folder.results,
+    "bray_curtis_species.rds"
+  )
+)
+
+##############################################################
+# 18. PERMANOVA
+#
+# Tests wheter community composition differs betwen Train/Test/Score.
+####################################################################
+print("Running PERMANOVA...")
+
+adonis_result <- vegan::adonis2(
+  beta_dist ~ Group,
+  data = phe.table,
+  permutations = 999
+)
+
+print(adonis_result)
+
+write.csv(
+  as.data.frame(adonis_result),
+  file = paste0(
+    PARAM$folder.results,
+    "permanova_group.csv"
+  ),
+  quote = FALSE
+)
+
+################################################################
+# 19. PCoA
+#################################################################
+
+print("Running PCoA...")
+
+pcoa <- cmdscale(
+  beta_dist,
+  eig = TRUE,
+  add = TRUE
+)
+
 positions <- pcoa$points
-colnames(positions) <- c("pcoa1", "pcoa2")
-percent_explained <- 100 * pcoa$eig / sum(pcoa$eig)
-​
-pretty_pe <- format(round(percent_explained, digits =1), 
-                    nsmall=1, 
-                    trim=TRUE)
-​
-labels <- c(glue("PCoA 1 ({pretty_pe[1]}%)"),
-            glue("PCoA 2 ({pretty_pe[2]}%)"))
-​
-# plot percent explained
-tibble(pe = percent_explained,
-       axis = 1:length(percent_explained)) %>%
-  ggplot(aes(x=axis, y=pe)) +
-  geom_line() +
-  coord_cartesian(xlim = c(1, 10), ylim=c(0, 10)) +
-  scale_x_continuous(breaks=1:10) +
-  theme_classic()
-​
-# combine metadata and betadiv
-positions <- positions %>% 
-  as.data.frame() %>% 
-  rownames_to_column( var = "ID")
-​
-pcoa.rar <- dplyr::inner_join(meta, p)
-​
-#please adapt the code to finrisk meta covariates
-#plot pcoa
-p.pcoa <- pcoa.rar %>%
-ggplot(aes(x=pcoa1, y=pcoa2, 
-           color= as.factor(status), #replace with Event
-           size= stage,#replace with Age group
-           shape = as.factor(gender)))+ 
-  geom_point(alpha=0.5) + 
-  labs(x=labels[1], y=labels[2]) +
-  theme_classic() + 
-  #scale_shape_manual(values=c(17, 1), name="Gender") + #keep
-  scale_size_continuous(name="Stage") + #change to age group
-  scale_colour_manual(values = c("#e41a1c",  # add colors according to number of categories 
-                                 #"#ff7f00", 
-                                 #"#984ea3",
-                                 #"#4daf4a",
-                                 "#377eb8"))+
-  ggtitle("Bray Curtis")  +
-  stat_ellipse(inherit.aes = F, #in your example should be able to just use stat_ellipse()
-               aes(color=status, x=pcoa1, y=pcoa2)) 
-​
-p.pcoa
-ggsave(p.pcoa, file=paste0(folder.results,
-                                      "betadiv_pcoa.pdf"), 
-       width = 5, height=5)
+
+colnames(positions) <- c(
+  "PCoA1",
+  "PCoA2"
+)
+
+###################################################################
+# 20. Percentage variance explained
+##################################################################
+
+eig <- pcoa$eig
+
+# Only positve eigenvalues contribue to explained variance
+positive_eig <- eig[eig > 0]
+
+percent_explained <-(
+  100 * eig / sum(positive_eig)
+)
+pretty_pe <- format(
+  round(
+    percent_explained,
+    digits = 1
+  ),
+  nsmall = 1,
+  trim = TRUE
+)
+
+x_label <- paste0(
+  "PCoA 1 (",
+  pretty_pe[1],
+  "%)"
+)
+
+y_label <- paste0(
+  "PCoA 2 (",
+  pretty_pe[2],
+  "%)"
+)
+
+################################################################
+# 21. Combine PCoA coordinates with metadat
+####################################################################
+
+positions <- as.data.frame(
+  positions
+)
+
+positions$ID <- rownames(
+  positions
+)
+
+pcoa_data <- dplyr::inner_join(
+  phe.table,
+  positions,
+  by= "ID"
+)
+
+saveRDS(
+  pcoa_data,
+  file = paste0(
+    PARAM$folder.results,
+    "pcoa_species.rds"
+  )
+)
+
+###############################################################
+# 22. Set Group as factor
+###################################################################
+
+pcoa_data$Group <- factor(
+  pcoa_data$Group,
+  levels = c(
+    "Train",
+    "Test",
+    "Score"
+  )
+)
+
+###############################################################
+# 23. Density-contour PCoA plot
+#
+# Points show indivdual samples.
+# Filled density conours show where samples are conentrated.
+##################################################################
+
+print("Creating density contur PCoA plot..")
+
+#PLOT Density outside    
+cb_palette <-c(
+  "Train" = "#1b9177",
+  "Test"  = "#d95f02",
+  "Score" = "#7570b3"
+)
+
+p.pcoa <- ggplot(
+  pcoa_data,
+  aes(
+    x = PCoA1,
+    y = PCoA2,
+    color = Group
+  )
+) +
+  
+  geom_point(
+    alpha = 0.4,
+    size = 1
+  ) +
+  
+  stat_density_2d(
+    aes(color = Group),
+    linewidth = 0.8
+  )+
+  
+  scale_color_manual(values = cb_palette) +
+  
+  labs(
+    x = x_label,
+    y = y_label,
+    color = "Dataset"
+  ) +
+  
+  theme_classic() +
+  
+  theme(
+    # Axis labels
+    axis.title.x = element_text(size = 20),
+    axis.title.y = element_text(size = 20),
+    
+    # Axis tick labels
+    axis.text.x = element_text(size = 16),
+    axis.text.y = element_text(size = 16),
+    # Legend
+    legend.title = element_text(size = 18),
+    legend.text = element_text(size = 16),
+    
+    # Plot title, if you add one
+    plot.title = element_text(
+      size = 16,
+      hjust = 0.5
+    )
+  )
+
+p.x <- ggplot(
+  pcoa_data,
+  aes(x = PCoA1, fill = Group, color = Group)
+) +
+  geom_density(alpha = 0.25) +
+  scale_color_manual(values = cb_palette) +
+  scale_fill_manual(values = cb_palette) +
+  theme_void() +
+  theme(
+    legend.position = "none"
+  )
+
+p.y <- ggplot(
+  pcoa_data,
+  aes(x = PCoA2, fill = Group, color = Group)
+) +
+  geom_density(alpha = 0.25) +
+  scale_color_manual(values = cb_palette) +
+  scale_fill_manual(values = cb_palette) +
+  theme_void() +
+  theme(
+    legend.position = "none"
+  )  + coord_flip()
+p.final <- p.x + plot_spacer() +
+  p.pcoa + p.y +
+  plot_layout(
+    widths = c(4, 1),
+    heights =c(1, 4)
+  )
+
+ggsave(
+  filename = paste0(
+    PARAM$folder.result,
+    "pcoa_species_density_real.pdf"
+  ),
+  plot = p.final,
+  width = 7,
+  height =6
+)
