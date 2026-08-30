@@ -68,13 +68,17 @@ singularity run SB2_final.sif input_real scoring
 
 During the post-challenge phase, 2 more modifications were tested which include the **SB2_v2** and **SB2_v3**. For the *SB2_v2*, we revised the taxonomic filtering criteria by introducing more stringent and interpretable thresholds for detection and prevalence. Instead of filtering taxa based on raw count abundance (present in >80% of samples with counts >2), we applied a relative abundance threshold of 0.1% and retained taxa present in at least 10% of the samples. This ensured that rare and potentially noisy taxa were excluded more robustly. Additionally,  we modified the downstream Gene Set Variation Analysis (GSVA) score calculation to operate on relative abundance data instead of raw counts. This adjustment allowed GSVA to better capture variation across biologically coherent microbial clusters. To reduce redundancy and improve model efficiency, we excluded phylum-level information. Additionally, the Firmicutes-Bacteroidetes ratio was subjected to penalization, rather than being treated as an unpenalized covariate as in the original model. Finally, we simplified the alpha diversity estimation step by focusing on Shannon diversity and observed richness. **SB2_v3** using the similar approach as the **SB2_v2**, however in this model, only Age is selected as unpenalized features. We also created one alternative model based on the Random Survival Forest (RSF). The unpenalized features in all of three model were subjected to features selection via LASSO or EN. We also performed RSF model without feature selection. All of the code for each model variation will be described in details bellow:
 
-a. The code for **SB2_v2** can be found in the directory below with code implemented LASSO or EN feature selection in parallel : **[TEAMS/SB2/code_ref/main_lasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lasso.r)**
+a. The code for **SB2_v2_++CoxPh** can be found in the directory below with code implemented LASSO or EN feature selection in parallel : **[TEAMS/SB2/code_ref/main_lasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lasso_clr.r)**
 
-b. **SB2_v3** almost similar to SB2_v2, however in this model, only Age is selected as unpenalized features. The model can be found in: **[TEAMS/SB2/code_ref/main_lassoAgefix.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lassoAgeFix.r)**
+b. **SB2_v3_++CoxPh** almost similar to SB2_v2, however in this model, only Age is selected as unpenalized features. The code can be found in: **[TEAMS/SB2/code_ref/main_lasso_clrAgeFix.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lasso_clrAgeFix.r)**
 
-c. 
+c. **SB2_v2_++RSF** is RSF implementation based on feature engineering applied in SB2 modelwith LASSO or EN feature selection. The code can be found in: **[TEAMS/SB2/code_ref/main_rsf.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_rsf.r)**
 
-Similar singularity image that has been submitted during the challenge can be used to execute the refine model as follow:
+d. **SB2_v3_++RSF** is similar as model c, with Age as the only penalized feature. The code can be found in: **[TEAMS/SB2/code_ref/main_rsfAgeFix.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_rsfAgeFix.r)**
+
+e. **SB2_v2_AllRSF** is similar to model c without LASSo or EN penalization. The code can be found in: **[TEAMS/SB2/code_ref/run_rsf_nolasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/run_rsf_nolasso.r)**
+
+The ++ indicated whether the LASSO or EN feature selection was applied which was implemented in the same code. Similar singularity image that has been submitted during the challenge can be used to execute the refine model as follow:
 
 ```
 singularity exec SB2_final.sif Rscript <each script listed above> ./ input_real scoring
