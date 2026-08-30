@@ -68,9 +68,9 @@ singularity run SB2_final.sif input_real scoring
 
 During the post-challenge phase, 2 more modifications were tested, which are:
 
-a. **SB2 refined model** where the phylum informations were removed from the features for LASSO feature selection due to it representing redundant information with species information. The model can be found in: **[TEAMS/SB2/code_v2/main_lasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2/code_v2/main_lasso.r)**
+a. **SB2_v2** where the phylum informations were removed from the features for LASSO feature selection due to it representing redundant information with species information. The model can be found in: **[TEAMS/SB2/code_ref/main_lasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lasso.r)**
 
-b. **SB2 age fixed** almost similar to SB2 refined model above, however in this model, only Age is selected as unpenalized features. The model can be found in: **[TEAMS/SB2/code_v2/main_Agefix.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2/code_v2/main_Agefix.r)**
+b. **SB2_v3** almost similar to SB2 refined model above, however in this model, only Age is selected as unpenalized features. The model can be found in: **[TEAMS/SB2/code_v2/main_Agefix.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2/code_v2/main_Agefix.r)**
 
 Similar singularity image that has been submitted during the challenge can be used to execute the refine model as follow:
 
