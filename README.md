@@ -119,13 +119,17 @@ To assess the potential contribution of dietary information, we compared models 
 The same models was used for evaluation as described above with modification in the input dataset. To evaluate the dietary information contribution on the model performance, we used the phenotype data that had the HFC score available and treated HFC as the predictors.  Similarly we used the input data with HF strict definition to perform the sensitivity analysis on the HF strict defintion.
 
 
-## D. Reproducing the Figures in mansucript
+## D. Reproducing the Figures in manuscript
 
-- Figure 1A. Geographical distribution across Finland for the individuals within the national FINRISK 2002 cohort was adapted from https://gitlab.com/openfinrisk2002/article-2021-finrisk02-taxonomic-signatures-mortality-risk/-/blob/master/code/create_figure1_map_and_pcoa/finland.R
-- Figure 1B. Principal Coordinate Analysis (PCoA) using Bray-Curtis dissimilarity metrics between randomly selected subsets of the data (training, testing, scoring sets) : [code/pcoa_viz.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/pcoa_viz.R)
-- Figure 2B were created according to the Supplementary Table 4 and 6 that was extracted from the output of each model.
-- Figure 4. Cumulative incidence of HF over 15 years of follow up, stratified by quintiles of predicted risk score: [code/km_curves.html](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/km_curves.html)
-- The rest of the figure were created by [code/plotting_final.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/plotting_final.R).
+- Figure 3A. Geographical distribution across Finland for the individuals within the national FINRISK 2002 cohort was adapted from https://gitlab.com/openfinrisk2002/article-2021-finrisk02-taxonomic-signatures-mortality-risk/-/blob/master/code/create_figure1_map_and_pcoa/finland.R.
+- Figure 3 B,C. Principal Coordinate Analysis (PCoA) using Bray-Curtis dissimilarity metrics between randomly selected subsets of the data (training, testing, scoring sets). The B panel is for the [real dataset](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/bray_pcoa.R) and C panel is for the [synthetic dataset](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/bray_pcoa_syn.R).
+- Figure 4 was created using the code in : [./code/Viz_performance.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/Viz_performance.R)
+- Figure 5 was created using the code in: [./code/Viz_features.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/Viz_features.R)
+- Supplementary Figure 1 was created using the code: [./code/pheno_RealSyn.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/pheno_RealSyn.R)
+- Supplementary Figure 2 and 4 was created using the code: [./code/Over_PairModelPerform.R](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/Over_PairModelPerform.R)
+- Supplementary Figure 3 was created based on the selected network available in Supplementary Table 5 and 6. Each network was constructed by applying the Louvain cluster method to the whole network obtained using the SPIEC-EASI method. In these networks, the presence of a link between any two nodes signifies a linear relationship between the abundances of the associated species, which cannot be surpassed by alternative network configurations. Node size represents node degree (number of connections after edge filtering), while edges represent SPIEC-EASI-derived associations with absolute weights ≥ 0.01. Node positions were determined using the Fruchterman-Reingold force-directed layout. The visualization was perfromed using Cytoscape.
+- Supplementary Figure 5,6 for Cumulative incidence of HF over 15 years of follow up, stratified by quintiles of predicted risk score as well as the callibration curve: [code/km_curves.html](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/code/km_curves.html)
+
 
 
 
