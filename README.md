@@ -59,6 +59,21 @@ Due to participants’ limited access to the real dataset, we also worked with t
 
 ### 1. Baseline All model
 
+We provided 3 examples of Baseline models based on Cox Proportional Hazard model to the participants together with their evaluation scores. Those three models were: a). **[Baseline Age-Sex](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_AgeSex.R)**, b). **[Baseline Covariates](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_AllCovar.R)**, and c). **[Baseline all](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_AllCovar.R)** which builds upon Baseline Covariates by further incorporating the centered log-ratio of relative species abundance information.
+
+During the post-challenge phase we also evaluated the model performance if the features in Baseline All model were subjected into either LASSO or Elastic Net (EN) features selection. Additionally we also evaluated the Random Survival Forests (RSF) variant of the Baseline All model, combined with different feature selection methods: LASSO, Elastic Net (EN), or no selection at all. The code of all models can be found in the directory below:
+
+a. [Baseline_All_lassoCoxPh](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_MicrobesCovar_lasso.R)
+
+b. [Baseline_All_enetCoxPh](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_MicrobesCovar_enet.R)
+
+c. [Baseline_All_lassoRSF](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_MicrobesCovar_lassoRSF.R)
+
+d.  [Baseline_All_enetRSF](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_MicrobesCovar_lassoReg.R)
+
+e. [Baseline_All_RSF](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/Baseline/BaseModel_MicrobesCovarRSF.R)
+
+
 
 ### 2. SB2 model refinement
 
@@ -69,7 +84,11 @@ Command to run the submission during the final phase when evaluations were carri
 singularity run SB2_final.sif input_real scoring
 ```
 
-During the post-challenge phase, 2 more modifications were tested which include the **SB2_v2** and **SB2_v3**. For the *SB2_v2*, we revised the taxonomic filtering criteria by introducing more stringent and interpretable thresholds for detection and prevalence. Instead of filtering taxa based on raw count abundance (present in >80% of samples with counts >2), we applied a relative abundance threshold of 0.1% and retained taxa present in at least 10% of the samples. This ensured that rare and potentially noisy taxa were excluded more robustly. Additionally,  we modified the downstream Gene Set Variation Analysis (GSVA) score calculation to operate on relative abundance data instead of raw counts. This adjustment allowed GSVA to better capture variation across biologically coherent microbial clusters. To reduce redundancy and improve model efficiency, we excluded phylum-level information. Additionally, the Firmicutes-Bacteroidetes ratio was subjected to penalization, rather than being treated as an unpenalized covariate as in the original model. Finally, we simplified the alpha diversity estimation step by focusing on Shannon diversity and observed richness. **SB2_v3** using the similar approach as the **SB2_v2**, however in this model, only Age is selected as unpenalized features. We also created one alternative model based on the Random Survival Forest (RSF). The unpenalized features in all of three model were subjected to features selection via LASSO or EN. We also performed RSF model without feature selection. All of the code for each model variation will be described in details bellow:
+During the post-challenge phase, 2 more modifications were tested which include the **SB2_v2** and **SB2_v3**. For the *SB2_v2*, we revised the taxonomic filtering criteria by introducing more stringent and interpretable thresholds for detection and prevalence. Instead of filtering taxa based on raw count abundance (present in >80% of samples with counts >2), we applied a relative abundance threshold of 0.1% and retained taxa present in at least 10% of the samples. This ensured that rare and potentially noisy taxa were excluded more robustly. 
+
+Additionally,  we modified the downstream Gene Set Variation Analysis (GSVA) score calculation to operate on relative abundance data instead of raw counts. This adjustment allowed GSVA to better capture variation across biologically coherent microbial clusters. To reduce redundancy and improve model efficiency, we excluded phylum-level information. Additionally, the Firmicutes-Bacteroidetes ratio was subjected to penalization, rather than being treated as an unpenalized covariate as in the original model. 
+
+Finally, we simplified the alpha diversity estimation step by focusing on Shannon diversity and observed richness. **SB2_v3** using the similar approach as the **SB2_v2**, however in this model, only Age is selected as unpenalized features. We also created one alternative model based on the Random Survival Forest (RSF). The unpenalized features in all of three model were subjected to features selection via LASSO or EN. We also performed RSF model without feature selection. All of the code for each model variation will be described in details bellow:
 
 a. The code for **SB2_v2_++CoxPh** can be found in the directory below with code implemented LASSO or EN feature selection in parallel : **[TEAMS/SB2/code_ref/main_lasso.r](https://github.com/FinriskHFDREAM/FinriskHF_post1/blob/main/TEAMS/SB2_ref/code_ref/main_lasso_clr.r)**
 
